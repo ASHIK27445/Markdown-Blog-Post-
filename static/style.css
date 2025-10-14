@@ -132,10 +132,11 @@ body {
 
 .subsection-link {
     display: block;
-    color: #656d76;
+    color: maroon;
     text-decoration: none;
     padding: 0.25rem 0;
     font-size: 0.85rem;
+    font-weight: 600;
 }
 
 .subsection-link:hover {
@@ -265,9 +266,8 @@ body {
 .subsection {
     margin: 2rem 0;
     padding: 1.5rem;
-    background: #f6f8fa;
     border-radius: 6px;
-    border: 1px solid #d0d7de;
+
 }
 
 .subsection h2 {
