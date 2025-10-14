@@ -1,0 +1,474 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #24292f;
+    background-color: #ffffff;
+}
+
+/* Navigation */
+.navbar {
+    background: #f6f8fa;
+    color: #24292f;
+    padding: 1rem 0;
+    border-bottom: 1px solid #d0d7de;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #0969da;
+    text-decoration: none;
+}
+
+.nav-links a {
+    color: #24292f;
+    text-decoration: none;
+    margin-left: 2rem;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: #0969da;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Layout */
+.layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+    min-height: calc(100vh - 120px);
+}
+
+/* Sidebar - GitHub-like */
+.sidebar {
+    background: #f6f8fa;
+    border-radius: 6px;
+    padding: 1.5rem;
+    border: 1px solid #d0d7de;
+    height: fit-content;
+    position: sticky;
+    top: 2rem;
+}
+
+.sidebar h2 {
+    margin-bottom: 1rem;
+    color: #24292f;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-bottom: 1px solid #d0d7de;
+    padding-bottom: 0.5rem;
+}
+
+.blog-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.blog-item {
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 0.75rem;
+    position: relative;
+    background: white;
+}
+
+.blog-item.active {
+    border-color: #0969da;
+    background-color: #ddf4ff;
+}
+
+.blog-title {
+    color: #0969da;
+    text-decoration: none;
+    font-weight: 500;
+    display: block;
+    margin-right: 2rem;
+    font-size: 0.9rem;
+}
+
+.blog-title:hover {
+    text-decoration: underline;
+}
+
+.toggle-btn {
+    position: absolute;
+    right: 0.75rem;
+    top: 0.75rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #656d76;
+    font-size: 0.8rem;
+}
+
+.subsections {
+    margin-top: 0.5rem;
+    padding-left: 0.75rem;
+    border-left: 2px solid #d0d7de;
+}
+
+.subsection-link {
+    display: block;
+    color: #656d76;
+    text-decoration: none;
+    padding: 0.25rem 0;
+    font-size: 0.85rem;
+}
+
+.subsection-link:hover {
+    color: #0969da;
+    text-decoration: underline;
+}
+
+/* Main Content - GitHub README Style */
+.main-content {
+    background: white;
+    border-radius: 6px;
+    padding: 2rem;
+}
+
+/* GitHub-like Markdown Content */
+.blog-content {
+    max-width: 100%;
+    line-height: 1.7;
+}
+
+.blog-content h1 {
+    color: #24292f;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid #d0d7de;
+}
+
+.blog-content h2 {
+    color: #24292f;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 2rem 0 1rem 0;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid #d0d7de;
+}
+
+.blog-content h3 {
+    color: #24292f;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 1.5rem 0 1rem 0;
+}
+
+.blog-content p {
+    margin-bottom: 1rem;
+    color: #24292f;
+}
+
+.blog-content ul, .blog-content ol {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+}
+
+.blog-content li {
+    margin-bottom: 0.25rem;
+}
+
+.blog-content blockquote {
+    border-left: 4px solid #d0d7de;
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: #656d76;
+    background: #f6f8fa;
+    padding: 1rem;
+    border-radius: 0 6px 6px 0;
+}
+
+/* GitHub-like Code Blocks */
+.blog-content pre {
+    background: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 1rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+    font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace;
+    font-size: 0.85rem;
+    line-height: 1.45;
+}
+
+.blog-content code {
+    background: #f6f8fa;
+    color: #24292f;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace;
+    font-size: 0.85rem;
+    border: 1px solid #d0d7de;
+}
+
+.blog-content pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+}
+
+/* GitHub-like Tables */
+.blog-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1rem 0;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.blog-content th, .blog-content td {
+    border: 1px solid #d0d7de;
+    padding: 0.5rem 1rem;
+    text-align: left;
+}
+
+.blog-content th {
+    background: #f6f8fa;
+    font-weight: 600;
+}
+
+.blog-content tr:nth-child(even) {
+    background: #f6f8fa;
+}
+
+/* Subsection Styling */
+.subsection {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #f6f8fa;
+    border-radius: 6px;
+    border: 1px solid #d0d7de;
+}
+
+.subsection h2 {
+    color: #24292f;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #d0d7de;
+}
+
+/* Welcome Message */
+.welcome-message h1 {
+    color: #24292f;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #d0d7de;
+    padding-bottom: 0.5rem;
+}
+
+.welcome-message p {
+    color: #656d76;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.feature-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.card {
+    background: #f6f8fa;
+    padding: 1.5rem;
+    border-radius: 6px;
+    text-align: center;
+    border: 1px solid #d0d7de;
+}
+
+.card i {
+    font-size: 2rem;
+    color: #0969da;
+    margin-bottom: 1rem;
+}
+
+.card h3 {
+    color: #24292f;
+    margin-bottom: 0.5rem;
+}
+
+.card p {
+    color: #656d76;
+    font-size: 0.9rem;
+}
+
+/* Admin Styles */
+.admin-header {
+    margin-bottom: 2rem;
+}
+
+.admin-header h1 {
+    color: #24292f;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #d0d7de;
+    padding-bottom: 0.5rem;
+}
+
+.admin-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 6px;
+    border: 1px solid #d0d7de;
+    margin-bottom: 2rem;
+}
+
+.admin-section h2 {
+    color: #24292f;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #d0d7de;
+    padding-bottom: 0.5rem;
+}
+
+/* Forms */
+.blog-form, .subsection-form {
+    background: #f6f8fa;
+    padding: 1.5rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #d0d7de;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #24292f;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 1rem;
+    background: white;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #0969da;
+    box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background: #0969da;
+    color: white;
+    border-color: #0969da;
+}
+
+.btn-primary:hover {
+    background: #0550ae;
+    border-color: #0550ae;
+}
+
+.btn-secondary {
+    background: #f6f8fa;
+    color: #24292f;
+    border-color: #d0d7de;
+}
+
+.btn-secondary:hover {
+    background: #eaeef2;
+}
+
+.btn-edit {
+    background: #eaeef2;
+    color: #24292f;
+    border-color: #d0d7de;
+}
+
+.btn-edit:hover {
+    background: #eaeef2;
+}
+
+.btn-delete {
+    background: #d1242f;
+    color: white;
+    border-color: #d1242f;
+}
+
+.btn-delete:hover {
+    background: #a40e26;
+    border-color: #a40e26;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+        position: static;
+    }
+    
+    .feature-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .nav-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .nav-links a {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+}

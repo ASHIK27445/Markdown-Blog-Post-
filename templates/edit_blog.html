@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Edit {{ blog.title }} - Blog App{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="admin-header">
+        <h1>Edit: {{ blog.title }}</h1>
+        <a href="{{ url_for('admin') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Admin
+        </a>
+    </div>
+
+    <!-- Edit Blog Form -->
+    <div class="admin-section">
+        <h2>Edit Blog Content</h2>
+        <form method="POST" action="{{ url_for('update_blog', blog_id=blog_id) }}" class="blog-form">
+            <div class="form-group">
+                <label for="title">Blog Title:</label>
+                <input type="text" id="title" name="title" value="{{ blog.title }}" required>
+            </div>
+            <div class="form-group">
+                <label for="content">Blog Content (Markdown):</label>
+                <textarea id="content" name="content" rows="10" required>{{ blog.content }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Blog</button>
+        </form>
+    </div>
+
+    <!-- Subsections Management -->
+    <div class="admin-section">
+        <div class="subsection-header">
+            <h2>Manage Subsections</h2>
+            <button class="btn btn-primary" onclick="toggleSubsectionForm('add-subsection-form')">
+                <i class="fas fa-plus"></i> Add Subsection
+            </button>
+        </div>
+
+        <!-- Add Subsection Form -->
+        <form id="add-subsection-form" method="POST" action="{{ url_for('add_subsection', blog_id=blog_id) }}" 
+              class="subsection-form" style="display: none;">
+            <div class="form-group">
+                <label for="subsection_title">Subsection Title:</label>
+                <input type="text" id="subsection_title" name="subsection_title" required>
+            </div>
+            <div class="form-group">
+                <label for="subsection_content">Subsection Content (Markdown):</label>
+                <textarea id="subsection_content" name="subsection_content" rows="6" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Subsection</button>
+        </form>
+
+        <!-- Existing Subsections -->
+        <div class="subsections-list">
+            {% for subsection in blog.subsections %}
+            <div class="subsection-item">
+                <div class="subsection-header">
+                    <h3>{{ subsection.title }}</h3>
+                    <div class="subsection-actions">
+                        <button class="btn btn-edit" onclick="toggleSubsectionForm('edit-form-{{ loop.index0 }}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <a href="{{ url_for('delete_subsection', blog_id=blog_id, subsection_index=loop.index0) }}" 
+                           class="btn btn-delete"
+                           onclick="return confirm('Are you sure you want to delete this subsection?')">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Edit Subsection Form -->
+                <form id="edit-form-{{ loop.index0 }}" method="POST" 
+                      action="{{ url_for('edit_subsection', blog_id=blog_id, subsection_index=loop.index0) }}"
+                      class="subsection-form" style="display: none;">
+                    <div class="form-group">
+                        <label for="edit_title_{{ loop.index0 }}">Subsection Title:</label>
+                        <input type="text" id="edit_title_{{ loop.index0 }}" name="subsection_title" 
+                               value="{{ subsection.title }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_content_{{ loop.index0 }}">Subsection Content (Markdown):</label>
+                        <textarea id="edit_content_{{ loop.index0 }}" name="subsection_content" 
+                                  rows="6" required>{{ subsection.content }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Subsection</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

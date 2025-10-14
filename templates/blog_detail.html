@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+{% block title %}{{ blog.title }} - Blog App{% endblock %}
+
+{% block content %}
+<style>
+/* Markdown code language style*/
+.code-block {
+  position: relative;
+  margin: 1.5rem 0;
+}
+
+.language-label {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #fce7f3;
+  color: #9d174d;
+  padding: 0.2rem 0.8rem;
+  font-size: 0.7rem;
+  border-radius: 4px 4px 0 0;
+  font-family: Arial, sans-serif;
+  text-transform: uppercase;
+  font-weight: bold;
+  border: 1px solid #c7254e;
+  border-radius: 5px;
+}
+
+    
+/* ===== Base Layout ===== */
+.layout {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  flex: 0 0 250px;
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: 8px;
+  height: fit-content;
+}
+
+.sidebar h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.blog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.blog-item.active {
+  background: #e9eefc;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+.blog-title {
+  font-weight: bold;
+  color: red;
+  text-decoration: none;
+  word-wrap: break-word;
+}
+
+.blog-title:hover {
+  text-decoration: underline;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  float: right;
+}
+
+.subsections {
+  margin-top: 0.5rem;
+  display: none;
+}
+
+.subsection-link {
+  display: block;
+  padding: 0.3rem 0;
+  font-size: 0.9rem;
+  color: #555;
+  text-decoration: none;
+  word-wrap: break-word;
+}
+
+.subsection-link:hover {
+  text-decoration: underline;
+}
+
+.sidebar-note {
+  margin-top: 1rem;
+}
+
+/* ===== Main Content ===== */
+.main-content {
+  flex: 1;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 6px;
+  overflow-x: hidden;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.blog-content h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.25rem;
+  word-wrap: break-word;
+}
+
+.subsection h2 {
+  font-size: 1.4rem;
+  margin-top: 0.5rem;
+  word-wrap: break-word;
+}
+
+.content-html {
+  line-height: 1.6;
+  color: #333;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* Main content spacing fix */
+.content-html {
+  line-height: 1.6;
+  color: #333;
+
+  /* Remove pre-wrap to let default HTML spacing work normally */
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Reset margins for elements inside content */
+.content-html p,
+.content-html ul,
+.content-html ol,
+.content-html li,
+.content-html h1,
+.content-html h2,
+.content-html h3,
+.content-html h4,
+.content-html h5,
+.content-html h6 {
+  margin: 0;
+  padding: 0;
+}
+
+/* Add small controlled spacing */
+.content-html p {
+  margin-bottom: 0.5rem;
+}
+
+.content-html ul,
+.content-html ol {
+  margin-left: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.content-html li {
+  margin-bottom: 0.25rem;
+}
+
+.content-html h1 {
+  margin-bottom: 0.25rem;
+}
+
+.content-html h2 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+
+/* Inline code inside content */
+.content-html code {
+  background: #f0f0f0;       /* light grey background */
+  color: #c7254e;            /* optional text color */
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+/* Code blocks (full blocks) */
+.content-html pre {
+  background: #1e1e1e;
+  color: #f8f8f2;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 0.9rem;
+  overflow-x: auto;
+  white-space: pre-wrap; /* wrap long lines */
+}
+
+
+/* ===== Responsive Styles ===== */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    flex: 1;
+    order: 2;
+    padding: 0.75rem;
+  }
+
+  .main-content {
+    order: 1;
+    padding: 0.5rem;
+  }
+
+  .blog-content h1 {
+    font-size: 1.5rem;
+  }
+  .blog-content h2{
+    font-size: 1.2rem;
+  }
+    .blog-content h3{
+    font-size: 1.1rem;
+  }
+
+  .subsection h2 {
+    font-size: 0.9rem;
+  }
+
+  .blog-title,
+  .subsection-link {
+    font-size: 0.85rem;
+  }
+
+  .content-html {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    padding: 0.5rem;
+  }
+
+  .main-content {
+    padding: 0.5rem;
+  }
+
+  .blog-title {
+    font-size: 0.75rem;
+  }
+
+  .content-html {
+    font-size: 0.75rem;
+  }
+
+  .content-html pre,
+  .content-html code {
+    font-size: 0.25rem;
+  }
+}
+</style>
+
+<div class="container">
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>Blog Posts</h2>
+      <div class="blog-list">
+        <div class="blog-item active">
+          <a href="{{ url_for('blog_detail', blog_id=blog_id) }}" class="blog-title">
+            {{ blog.title }}
+          </a>
+          {% if blog.subsections %}
+          <button class="toggle-btn" onclick="toggleSubsections('{{ blog_id }}')">
+            <i id="icon-{{ blog_id }}" class="fas fa-chevron-down"></i>
+          </button>
+          <div id="subsections-{{ blog_id }}" class="subsections">
+            {% for subsection in blog.subsections %}
+            <a href="#subsection-{{ loop.index0 }}" class="subsection-link">
+              {{ subsection.title }}
+            </a>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+        <div class="sidebar-note">
+          <p><a href="{{ url_for('index') }}">← Back to all blogs</a></p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <article class="blog-content">
+        <h1>{{ blog.title }}</h1>
+        <div class="content-html">
+          {{ blog.content_html | safe }}
+        </div>
+
+        {% for subsection in blog.subsections %}
+        <section id="subsection-{{ loop.index0 }}" class="subsection">
+          <h2>{{ subsection.title }}</h2>
+          <div class="content-html">
+            {{ subsection.content_html | safe }}
+          </div>
+        </section>
+        {% endfor %}
+      </article>
+    </main>
+  </div>
+</div>
+
+<script>
+function toggleSubsections(id) {
+  const container = document.getElementById(`subsections-${id}`);
+  const icon = document.getElementById(`icon-${id}`);
+  container.style.display = container.style.display === 'block' ? 'none' : 'block';
+  icon.classList.toggle('fa-chevron-down');
+  icon.classList.toggle('fa-chevron-up');
+}
+
+// Add this to your existing script
+document.addEventListener('DOMContentLoaded', function() {
+  // Process all code blocks in the content
+  document.querySelectorAll('.content-html pre code').forEach(function(codeBlock) {
+    const pre = codeBlock.parentElement;
+    
+    // Check if code block has a language class
+    const languageMatch = codeBlock.className.match(/language-(\w+)/);
+    if (languageMatch) {
+      const language = languageMatch[1];
+      
+      // Create language label
+      const label = document.createElement('div');
+      label.className = 'language-label';
+      label.textContent = language.toUpperCase();
+      
+      // Wrap the pre in a container
+      const container = document.createElement('div');
+      container.className = 'code-block';
+      pre.parentNode.insertBefore(container, pre);
+      container.appendChild(label);
+      container.appendChild(pre);
+    }
+  });
+});
+</script>
+{% endblock %}
