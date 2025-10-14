@@ -1,8 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for
 import json
 import os
 from markdown import markdown
-import re
 
 app = Flask(__name__)
 
