@@ -263,10 +263,13 @@ body {
 
 .content-html blockquote {
   margin: 16px 0;
-  padding: 0 16px;
+  padding: 0;
   color: var(--color-fg-muted);
   border-left: 4px solid var(--color-border-default);
   font-style: italic;
+}
+.content-html blockquote p{
+  padding: 0 12px;
 }
 
 .content-html table {
@@ -403,9 +406,12 @@ body {
 /* Specific overrides for muted text */
 .sidebar h2,
 .content-html h6,
-.content-html blockquote,
 .language-label {
   color: var(--color-fg-muted) !important;
+}
+
+.content-html blockquote{
+  color: var(--color-canvas-default) !important;
 }
 
 /* Links should stay blue */
