@@ -344,6 +344,7 @@ body {
   margin: 16px 0;
 }
 
+
 .language-label {
   position: absolute;
   top: 8px;
@@ -406,8 +407,7 @@ body {
 
 /* Specific overrides for muted text */
 .sidebar h2,
-.content-html h6,
-.language-label {
+.content-html h6{
   color: var(--color-fg-muted) !important;
 }
 
@@ -457,6 +457,13 @@ body {
   .subsection h2 {
     font-size: 20px;
   }
+  .language-label{
+  color: red;
+  font-size: 10px;
+  top: -5px;
+  right: 0;
+  font-weight: 500;
+}
 }
 
 @media (max-width: 480px) {
@@ -480,6 +487,13 @@ body {
     font-size: 12px;
     padding: 12px;
   }
+    .language-label{
+  color: blue;
+  font-size: 9px;
+  top: -5px;
+  right: 0;
+  font-weight: 500;
+}
 }
 </style>
 
