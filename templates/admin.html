@@ -12,6 +12,9 @@
     <div class="simple-header">
         <h1>Content Manager</h1>
         <p>Create and manage your blog posts</p>
+        <a href="{{ url_for('manage_groups') }}" class="manage-groups-btn">
+            📁 Manage Groups
+        </a>
     </div>
 
     <!-- Create New Blog -->
@@ -42,7 +45,7 @@
         {% if blogs %}
         <div class="posts-grid">
             {% for blog_id, blog in blogs.items() %}
-            <div class="post-card">
+            <div class="post-card" data-blog-id="{{ blog_id }}">
                 <div class="post-header">
                     <h3 class="post-title">{{ blog.title }}</h3>
                     <span class="subsection-count">{{ blog.subsections|length }}</span>
@@ -74,6 +77,24 @@
 </div>
 
 <style>
+.manage-groups-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 1rem;
+    transition: all 0.3s ease;
+}
+
+.manage-groups-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+}
+
+/* Rest of your existing CSS styles remain the same */
 .gradient-admin {
     max-width: 1200px;
     margin: 0 auto;
@@ -85,7 +106,6 @@
     overflow: hidden;
 }
 
-/* Background Gradients */
 .gradient-left {
     position: fixed;
     top: 0;
@@ -108,7 +128,6 @@
     z-index: 0;
 }
 
-/* Header */
 .simple-header {
     text-align: center;
     margin-bottom: 3rem;
@@ -135,7 +154,6 @@
     margin: 0;
 }
 
-/* Form Card */
 .form-card {
     background: rgba(45, 45, 45, 0.7);
     border-radius: 16px;
@@ -160,7 +178,6 @@
     background-clip: text;
 }
 
-/* Form */
 .clean-form {
     max-width: 600px;
     margin: 0 auto;
@@ -234,22 +251,6 @@
     box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
 }
 
-.submit-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-}
-
-.submit-btn:hover::before {
-    left: 100%;
-}
-
-/* Blogs Section */
 .blogs-section {
     background: rgba(45, 45, 45, 0.7);
     border-radius: 16px;
@@ -290,31 +291,10 @@
     font-weight: 500;
 }
 
-/* Posts Grid - 3-2-1 Layout */
 .posts-grid {
     display: grid;
     gap: 1rem;
-}
-
-/* Large screens - 3 columns */
-@media (min-width: 768px) {
-    .posts-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-/* Medium screens - 2 columns */
-@media (min-width: 480px) and (max-width: 767px) {
-    .posts-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-/* Small screens - 1 column */
-@media (max-width: 479px) {
-    .posts-grid {
-        grid-template-columns: 1fr;
-    }
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
 .post-card {
@@ -436,7 +416,6 @@
     transform: translateY(-1px);
 }
 
-/* Empty State */
 .empty-state {
     text-align: center;
     padding: 3rem 2rem;
@@ -462,7 +441,6 @@
     font-size: 1rem;
 }
 
-/* Responsive */
 @media (max-width: 767px) {
     .gradient-admin {
         padding: 1rem;
@@ -489,9 +467,12 @@
     .action-btn {
         flex: none;
     }
+    
+    .posts-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
-/* Additional small screen optimization */
 @media (max-width: 480px) {
     .simple-header h1 {
         font-size: 2rem;

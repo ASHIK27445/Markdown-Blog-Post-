@@ -6,6 +6,7 @@ from markdown import markdown
 app = Flask(__name__)
 
 BLOGS_FILE = 'blogs.json'
+GROUPS_FILE = 'groups.json'
 
 def load_blogs():
     if os.path.exists(BLOGS_FILE):
@@ -17,6 +18,16 @@ def save_blogs(blogs):
     with open(BLOGS_FILE, 'w') as f:
         json.dump(blogs, f, indent=4)
 
+def load_groups():
+    if os.path.exists(GROUPS_FILE):
+        with open(GROUPS_FILE, 'r') as f:
+            return json.load(f)
+    return {}
+
+def save_groups(groups):
+    with open(GROUPS_FILE, 'w') as f:
+        json.dump(groups, f, indent=4)
+
 def safe_markdown(text):
     """Convert markdown to HTML with GitHub-like styling"""
     html = markdown(text, extensions=[
@@ -27,13 +38,17 @@ def safe_markdown(text):
     return html
 
 @app.context_processor
-def inject_blogs():
-    return {'blogs': load_blogs()}
+def inject_data():
+    return {
+        'blogs': load_blogs(),
+        'groups': load_groups()
+    }
 
 @app.route('/')
 def index():
     blogs = load_blogs()
-    return render_template('index.html', blogs=blogs)
+    groups = load_groups()
+    return render_template('index.html', blogs=blogs, groups=groups)
 
 @app.route('/blog/<blog_id>')
 def blog_detail(blog_id):
@@ -52,8 +67,69 @@ def blog_detail(blog_id):
 @app.route('/admin')
 def admin():
     blogs = load_blogs()
-    return render_template('admin.html', blogs=blogs)
+    groups = load_groups()
+    return render_template('admin.html', blogs=blogs, groups=groups)
 
+# New route for groups management
+@app.route('/manage_groups')
+def manage_groups():
+    blogs = load_blogs()
+    groups = load_groups()
+    return render_template('manage_groups.html', blogs=blogs, groups=groups)
+
+# Group Management Routes
+@app.route('/create_group', methods=['POST'])
+def create_group():
+    groups = load_groups()
+    
+    group_id = str(len(groups) + 1)
+    group_name = request.form['group_name']
+    group_description = request.form.get('group_description', '')
+    
+    groups[group_id] = {
+        'name': group_name,
+        'description': group_description,
+        'blogs': []  # List of blog IDs in this group
+    }
+    
+    save_groups(groups)
+    return redirect(url_for('manage_groups'))
+
+@app.route('/add_blog_to_group', methods=['POST'])
+def add_blog_to_group():
+    groups = load_groups()
+    group_id = request.form['group_id']
+    blog_id = request.form['blog_id']
+    
+    if group_id in groups and blog_id not in groups[group_id]['blogs']:
+        groups[group_id]['blogs'].append(blog_id)
+        save_groups(groups)
+    
+    return redirect(url_for('manage_groups'))
+
+@app.route('/remove_blog_from_group', methods=['POST'])
+def remove_blog_from_group():
+    groups = load_groups()
+    group_id = request.form['group_id']
+    blog_id = request.form['blog_id']
+    
+    if group_id in groups and blog_id in groups[group_id]['blogs']:
+        groups[group_id]['blogs'].remove(blog_id)
+        save_groups(groups)
+    
+    return redirect(url_for('manage_groups'))
+
+@app.route('/delete_group/<group_id>')
+def delete_group(group_id):
+    groups = load_groups()
+    
+    if group_id in groups:
+        del groups[group_id]
+        save_groups(groups)
+    
+    return redirect(url_for('manage_groups'))
+
+# Existing blog management routes (unchanged)
 @app.route('/create_blog', methods=['POST'])
 def create_blog():
     blogs = load_blogs()
