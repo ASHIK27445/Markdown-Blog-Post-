@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Visitor Statistics - Blog App{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/visitor_stats.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="gradient-admin">
+    <div class="gradient-left"></div>
+    <div class="gradient-right"></div>
+    
+    <!-- Header -->
+    <div class="simple-header">
+        <h1>Visitor Analytics</h1>
+        <p>Comprehensive insights into your blog's audience and engagement</p>
+        <div class="header-actions">
+            <a href="{{ url_for('admin') }}" class="manage-groups-btn">
+                ⬅ Back to Admin
+            </a>
+            <button id="refreshStats" class="refresh-btn">
+                <i class="fas fa-sync-alt"></i> Refresh Data
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Grid - 2x2 -->
+    <div class="stats-grid-detailed">
+        <div class="stat-card">
+            <div class="stat-icon">👁️</div>
+            <div class="stat-number">{{ stats.total_visits }}</div>
+            <div class="stat-label">Total Page Views</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-number">{{ stats.unique_visitors }}</div>
+            <div class="stat-label">Unique Visitors</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📅</div>
+            <div class="stat-number">{{ stats.today_visits }}</div>
+            <div class="stat-label">Today's Views</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🆕</div>
+            <div class="stat-number">{{ stats.today_unique_visitors }}</div>
+            <div class="stat-label">Today's Unique</div>
+        </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="charts-grid">
+        <div class="chart-container">
+            <canvas id="dailyVisitsChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="blogPopularityChart"></canvas>
+        </div>
+        <div class="chart-container full-width">
+            <canvas id="visitTrendsChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="visitorMetricsChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Content Grid - Popular Posts & Daily Visits Side by Side -->
+    <div class="content-grid">
+        <!-- Popular Posts -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2>🔥 Most Popular Posts</h2>
+            </div>
+            
+            {% if blog_stats %}
+            <div class="popular-blogs">
+                {% for blog in blog_stats %}
+                <div class="popular-blog-item">
+                    <div class="blog-info">
+                        <h4>{{ blog.title }}</h4>
+                        <span class="blog-id">ID: {{ blog.id if blog.id else 'homepage' }}</span>
+                    </div>
+                    <div class="visit-count">
+                        <span class="count">{{ blog.visits }}</span>
+                        <span class="label">views</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📊</div>
+                <h3>No visitor data yet</h3>
+                <p>Visitor statistics will appear here as people browse your blog</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Daily Visits -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2>📈 Daily Visits (Last 7 Days)</h2>
+            </div>
+            
+            {% if stats.daily_visits %}
+                {% set daily_items = [] %}
+                {% for date, visits in stats.daily_visits.items() %}
+                    {% if daily_items.append({'date': date, 'visits': visits}) %}{% endif %}
+                {% endfor %}
+                {% set recent_days = daily_items|sort(attribute='date', reverse=true)|list %}
+                {% set recent_days = recent_days[:7] %}
+                
+                <div class="daily-stats">
+                    {% for day in recent_days %}
+                    <div class="daily-stat-item">
+                        <span class="date">{{ day.date }}</span>
+                        <span class="visits-bar">
+                            {% set max_visits = [1] %}
+                            {% for d in recent_days %}
+                                {% if d.visits > max_visits[0] %}
+                                    {% set _ = max_visits.pop() %}
+                                    {% set _ = max_visits.append(d.visits) %}
+                                {% endif %}
+                            {% endfor %}
+                            <span class="bar-fill" style="width: {{ (day.visits / max_visits[0]) * 100 }}%"></span>
+                        </span>
+                        <span class="visit-count">{{ day.visits }} views</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📅</div>
+                <h3>No daily data yet</h3>
+                <p>Daily statistics will appear here over time</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='visitor_stats.js') }}"></script>
+{% endblock %}

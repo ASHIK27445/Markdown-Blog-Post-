@@ -10,3 +10,13 @@
 - Remove individual posts from groups or selection
 - Track selected posts count and manage selections in real-time
 - Dedicated group management page with all group operations
+
+## V3: Markdown Post v3.0 launching [commit 19]
+### Visitor Analytics Features
+**Real-time Data Tracking**
+- Total page views counting
+- Unique visitor identification  
+- Daily visit statistics
+- Blog visit tracking
+- IP hashing for privacy
+- Automatic data updates

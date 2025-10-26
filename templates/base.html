@@ -8,6 +8,10 @@
     <link rel="icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon/mfav-2.png') }}" type="image/png">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Extra CSS block for page-specific styles -->
+    {% block extra_css %}{% endblock %}
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- VS Code Syntax Highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/vs2015.min.css">
@@ -15,6 +19,9 @@
     <script>hljs.highlightAll();</script>
     <!-- GitHub Markdown styling for rendered markdown content -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
+
+    <!-- Chart.js for beautiful graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -49,5 +56,9 @@
             form.style.display = form.style.display === 'none' ? 'block' : 'none';
         }
     </script>
+
+    <!-- Your existing scripts... -->
+
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

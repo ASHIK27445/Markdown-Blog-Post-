@@ -15,6 +15,9 @@
         <a href="{{ url_for('manage_groups') }}" class="manage-groups-btn">
             📁 Manage Groups
         </a>
+        <a href="{{ url_for('visitor_stats') }}" class="manage-groups-btn">
+            📈 Vistor Analytics
+        </a>
     </div>
 
     <!-- Create New Blog -->
@@ -74,6 +77,34 @@
         </div>
         {% endif %}
     </div>
+
+    <!-- Visitor Statistics
+    <div class="stats-card">
+        <h3>📊 Visitor Analytics</h3>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-number">{{ visitor_stats.total_visits }}</span>
+                <span class="stat-label">Total Page Views</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">{{ visitor_stats.unique_visitors }}</span>
+                <span class="stat-label">Unique Visitors</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">{{ visitor_stats.today_visits }}</span>
+                <span class="stat-label">Today's Views</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">{{ visitor_stats.today_unique_visitors }}</span>
+                <span class="stat-label">Today's Unique</span>
+            </div>
+        </div>
+        <div class="stats-actions">
+            <a href="{{ url_for('visitor_stats') }}" class="detailed-stats-btn">
+                📈 View Detailed Analytics
+            </a>
+        </div>
+    </div> -->
 </div>
 
 <style>
