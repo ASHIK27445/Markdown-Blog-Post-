@@ -10,6 +10,18 @@
 - Remove individual posts from groups or selection
 - Track selected posts count and manage selections in real-time
 - Dedicated group management page with all group operations
+## MarkDown Post with Intregrated Groups Added functionality: Commit 18 [last]
+visit OTHERSREADMEINFO.md
+
+```bash
+git checkout feature-xyz
+git log --oneline
+```
+
+Your branch is fully restored.
+
+
+
 
 ## V3: Markdown Post v3.0 launching [commit 19]
 ### Visitor Analytics Features
