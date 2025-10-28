@@ -1,11 +1,14 @@
 {% extends "base.html" %}
 
+<!------------Stats Groups Title------------>
 {% block title %}Visitor Statistics - Blog App{% endblock %}
 
+<!------------Style link-------------------->
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/visitor_stats.css') }}">
 {% endblock %}
 
+<!------------Content Blocks---------------->
 {% block content %}
 <div class="gradient-admin">
     <div class="gradient-left"></div>
@@ -141,6 +144,7 @@
 </div>
 {% endblock %}
 
+<!-----------JS Link------------------------>
 {% block extra_js %}
-<script src="{{ url_for('static', filename='visitor_stats.js') }}"></script>
+<script src="{{ url_for('static', filename='js/visitor_stats.js') }}"></script>
 {% endblock %}
