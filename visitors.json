@@ -1,7 +1,7 @@
 {
-    "total_visits": 21,
+    "total_visits": 23,
     "unique_visitors": {
-        "12ca17b49af22894": 21
+        "12ca17b49af22894": 23
     },
     "blog_visits": {
         "3": 3,
@@ -12,9 +12,11 @@
         "image.png": 1
     },
     "daily_visits": {
-        "2025-10-26": 21
+        "2025-10-26": 21,
+        "2025-10-29": 2
     },
     "daily_unique_visitors": {
-        "2025-10-26": 1
+        "2025-10-26": 1,
+        "2025-10-29": 0
     }
 }
