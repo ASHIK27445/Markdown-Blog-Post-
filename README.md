@@ -22,8 +22,8 @@ Your branch is fully restored.
 
 
 
-
 ## V3: Markdown Post v3.0 launching [commit 19]
+
 ### Visitor Analytics Features
 **Real-time Data Tracking**
 - Total page views counting
@@ -32,3 +32,20 @@ Your branch is fully restored.
 - Blog visit tracking
 - IP hashing for privacy
 - Automatic data updates
+
+## V3: Markdown Post v3.2
+- Fixed multiple blog selection and addition to groups
+- Fixed template errors (Jinja2 UndefinedError)
+- Fixed data corruption handling in JSON files
+- Fixed duplicate blog display in sidebar
+- Fixed bulk operations interface functionality
+- Fixed blog organization logic (groups vs other posts)
+- Fixed malformed blog data crashes
+- Fixed single blog addition to groups
+- Fixed blog removal from groups
+- Fixed group creation and deletion
+- Fixed visitor tracking system
+- Fixed markdown rendering issues
+- Fixed subsection management
+- Fixed responsive design issues
+- Fixed error handling throughout the app

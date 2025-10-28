@@ -14,9 +14,41 @@ VISITORS_FILE = 'visitors.json'
 
 def load_blogs():
     if os.path.exists(BLOGS_FILE):
-        with open(BLOGS_FILE, 'r') as f:
-            return json.load(f)
+        try:
+            with open(BLOGS_FILE, 'r') as f:
+                blogs = json.load(f)
+            
+            # Clean up any malformed blog entries
+            cleaned_blogs = {}
+            for blog_id, blog_data in blogs.items():
+                if (isinstance(blog_data, dict) and 
+                    blog_data.get('title') and 
+                    isinstance(blog_data['title'], str) and 
+                    blog_data['title'].strip() != ''):
+                    
+                    # Ensure subsections exists and is a list
+                    if 'subsections' not in blog_data or not isinstance(blog_data['subsections'], list):
+                        blog_data['subsections'] = []
+                    
+                    # Ensure content exists
+                    if 'content' not in blog_data:
+                        blog_data['content'] = ''
+                    
+                    cleaned_blogs[blog_id] = blog_data
+                else:
+                    print(f"Warning: Skipping malformed blog entry {blog_id}: {blog_data}")
+            
+            # Save cleaned data back to file if we made changes
+            if len(cleaned_blogs) != len(blogs):
+                print(f"Cleaned blogs data: removed {len(blogs) - len(cleaned_blogs)} malformed entries")
+                save_blogs(cleaned_blogs)
+            
+            return cleaned_blogs
+        except (json.JSONDecodeError, Exception) as e:
+            print(f"Error loading blogs: {e}")
+            return {}
     return {}
+
 
 def save_blogs(blogs):
     with open(BLOGS_FILE, 'w') as f:
@@ -367,8 +399,38 @@ def delete_subsection(blog_id, subsection_index):
     
     return redirect(url_for('edit_blog', blog_id=blog_id))
 
+@app.route('/add_multiple_blogs_to_group', methods=['POST'])
+def add_multiple_blogs_to_group():
+    groups = load_groups()
+    blogs = load_blogs()
+    group_id = request.form['group_id']
+    blog_ids = request.form.getlist('blog_ids')  # Get all blog_ids
+    
+    if group_id in groups:
+        added_blogs = []
+        already_in_group = []
+        
+        for blog_id in blog_ids:
+            # Check if blog exists
+            if blog_id in blogs:
+                if blog_id not in groups[group_id]['blogs']:
+                    groups[group_id]['blogs'].append(blog_id)
+                    added_blogs.append(blog_id)
+                else:
+                    already_in_group.append(blog_id)
+        
+        save_groups(groups)
+        
+        # Optional: You can add flash messages here to show results
+        print(f"Added {len(added_blogs)} blogs to group. {len(already_in_group)} were already in the group.")
+    
+    return redirect(url_for('manage_groups'))
 
-
+@app.route('/cleanup_blogs')
+def cleanup_blogs():
+    """Clean up malformed blog entries"""
+    blogs = load_blogs()  # This will now clean the data
+    return redirect(url_for('admin'))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

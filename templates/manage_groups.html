@@ -59,10 +59,12 @@
                 <div class="blogs-checkbox-container">
                     <div class="blogs-checkbox-grid" id="blogsGrid">
                         {% for blog_id, blog in blogs.items() %}
+                        {% if blog and blog.title %}
                         <div class="blog-checkbox-item" data-blog-title="{{ blog.title|lower }}">
                             <input type="checkbox" id="blog_{{ blog_id }}" name="blog_ids" value="{{ blog_id }}" class="blog-checkbox">
                             <label for="blog_{{ blog_id }}" class="blog-checkbox-label">{{ blog.title }}</label>
                         </div>
+                        {% endif %}
                         {% endfor %}
                     </div>
                 </div>
@@ -79,17 +81,13 @@
                 
                 <div class="group-selection">
                     <h4>Add to Group:</h4>
-                    <div class="group-buttons">
-                        {% for group_id, group in groups.items() %}
-                        <form method="POST" action="{{ url_for('add_blog_to_group') }}" class="bulk-group-form">
-                            <input type="hidden" name="group_id" value="{{ group_id }}">
-                            <input type="hidden" name="blog_id" value="">
-                            <button type="submit" class="group-add-btn" data-group-id="{{ group_id }}">
-                                {{ group.name }}
-                            </button>
-                        </form>
-                        {% endfor %}
-                    </div>
+<div class="group-buttons">
+    {% for group_id, group in groups.items() %}
+    <button type="button" class="group-add-btn" data-group-id="{{ group_id }}">
+        {{ group.name }}
+    </button>
+    {% endfor %}
+</div>
                 </div>
             </div>
         </div>
@@ -124,7 +122,7 @@
                             <select name="blog_id" class="blog-select-compact" required>
                                 <option value="">Select a blog...</option>
                                 {% for blog_id, blog in blogs.items() %}
-                                {% if blog_id not in group.blogs %}
+                                {% if blog and blog.title and blog_id not in group.blogs %}
                                 <option value="{{ blog_id }}">{{ blog.title }}</option>
                                 {% endif %}
                                 {% endfor %}
@@ -135,26 +133,39 @@
                 </div>
 
                 <!-- Blogs in this Group -->
-                {% if group.blogs %}
-                <div class="group-blogs">
-                    <h4>Blogs in this group:</h4>
-                    <div class="blog-tags">
-                        {% for blog_id in group.blogs %}
-                        {% set blog = blogs[blog_id] %}
-                        <div class="blog-tag">
-                            <span>{{ blog.title }}</span>
-                            <form method="POST" action="{{ url_for('remove_blog_from_group') }}" class="inline-form">
-                                <input type="hidden" name="group_id" value="{{ group_id }}">
-                                <input type="hidden" name="blog_id" value="{{ blog_id }}">
-                                <button type="submit" class="remove-btn">&times;</button>
-                            </form>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% else %}
-                <p class="no-blogs">No blogs in this group yet.</p>
-                {% endif %}
+<!-- Blogs in this Group -->
+{% if group.blogs %}
+<div class="group-blogs">
+    <h4>Blogs in this group:</h4>
+    <div class="blog-tags">
+        {% for blog_id in group.blogs %}
+        {% if blog_id in blogs and blogs[blog_id] and blogs[blog_id].title %}
+        {% set blog = blogs[blog_id] %}
+        <div class="blog-tag">
+            <span>{{ blog.title }}</span>
+            <form method="POST" action="{{ url_for('remove_blog_from_group') }}" class="inline-form">
+                <input type="hidden" name="group_id" value="{{ group_id }}">
+                <input type="hidden" name="blog_id" value="{{ blog_id }}">
+                <button type="submit" class="remove-btn">&times;</button>
+            </form>
+        </div>
+        {% else %}
+        <!-- Show placeholder for missing blog -->
+        <div class="blog-tag" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;">
+            <span>Missing Blog (ID: {{ blog_id }})</span>
+            <form method="POST" action="{{ url_for('remove_blog_from_group') }}" class="inline-form">
+                <input type="hidden" name="group_id" value="{{ group_id }}">
+                <input type="hidden" name="blog_id" value="{{ blog_id }}">
+                <button type="submit" class="remove-btn">&times;</button>
+            </form>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<p class="no-blogs">No blogs in this group yet.</p>
+{% endif %}
 
                 <div class="card-actions">
                     <a href="{{ url_for('delete_group', group_id=group_id) }}" 
@@ -1134,34 +1145,47 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Bulk add functionality
-    groupAddButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
+// Bulk add functionality - FIXED VERSION
+groupAddButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        if (selectedBlogs.size === 0) {
+            alert('Please select at least one blog post');
+            return;
+        }
+        
+        const groupId = this.getAttribute('data-group-id');
+        const groupName = this.textContent.trim();
+        
+        if (confirm(`Add ${selectedBlogs.size} selected blog(s) to "${groupName}"?`)) {
+            // Create a single form to submit all selected blogs
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "{{ url_for('add_multiple_blogs_to_group') }}";
+            form.style.display = 'none';
             
-            if (selectedBlogs.size === 0) {
-                alert('Please select at least one blog post');
-                return;
-            }
+            // Add group_id
+            const groupIdInput = document.createElement('input');
+            groupIdInput.type = 'hidden';
+            groupIdInput.name = 'group_id';
+            groupIdInput.value = groupId;
+            form.appendChild(groupIdInput);
             
-            const form = this.closest('form');
-            const groupId = this.getAttribute('data-group-id');
-            
-            // Submit form for each selected blog
+            // Add all selected blog IDs
             selectedBlogs.forEach((title, blogId) => {
-                const tempForm = form.cloneNode(true);
-                const blogIdInput = tempForm.querySelector('input[name="blog_id"]');
+                const blogIdInput = document.createElement('input');
+                blogIdInput.type = 'hidden';
+                blogIdInput.name = 'blog_ids';
                 blogIdInput.value = blogId;
-                document.body.appendChild(tempForm);
-                tempForm.submit();
+                form.appendChild(blogIdInput);
             });
             
-            // Clear selection after adding
-            selectedBlogs.clear();
-            blogCheckboxes.forEach(cb => cb.checked = false);
-            updateSelectedArea();
-        });
+            document.body.appendChild(form);
+            form.submit();
+        }
     });
+});
 });
 </script>
 {% endblock %}

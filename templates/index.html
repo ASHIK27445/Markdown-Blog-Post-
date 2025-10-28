@@ -3,8 +3,6 @@
 {% block content %}
 <div class="container">
     <div class="layout">
-        <!-- Sidebar -->
-<!-- Sidebar -->
 <!-- Sidebar -->
 <aside class="sidebar">
     <h2>Blog Posts</h2>
@@ -26,17 +24,17 @@
             <div id="group-content-{{ group_id }}" class="group-content" style="display: none;">
                 <div class="blog-list">
                     {% for blog_id in group.blogs %}
-                    {% set blog = blogs[blog_id] %}
+                    {% if blog_id in blogs and blogs[blog_id] and blogs[blog_id].title %}
                     <div class="blog-item">
                         <a href="{{ url_for('blog_detail', blog_id=blog_id) }}" class="blog-title">
-                            {{ blog.title }}
+                            {{ blogs[blog_id].title }}
                         </a>
-                        {% if blog.subsections %}
+                        {% if blogs[blog_id].subsections %}
                         <button class="toggle-btn" onclick="toggleSubsections('{{ blog_id }}')">
                             <i id="icon-{{ blog_id }}" class="fas fa-chevron-down"></i>
                         </button>
                         <div id="subsections-{{ blog_id }}" class="subsections" style="display: none;">
-                            {% for subsection in blog.subsections %}
+                            {% for subsection in blogs[blog_id].subsections %}
                             <a href="{{ url_for('blog_detail', blog_id=blog_id) }}#subsection-{{ loop.index0 }}"
                                class="subsection-link">
                                 {{ subsection.title }}
@@ -45,6 +43,7 @@
                         </div>
                         {% endif %}
                     </div>
+                    {% endif %}
                     {% endfor %}
                 </div>
             </div>
@@ -58,40 +57,43 @@
     </div>
     {% endif %}
 
-    <!-- Ungrouped Blogs -->
-    <div class="ungrouped-blogs">
-        <h3>Other Posts</h3>
-        <div class="blog-list">
-            {% for blog_id, blog in blogs.items() %}
-            {% set is_ungrouped = true %}
-            {% for group in groups.values() %}
-                {% if blog_id in group.blogs %}
-                    {% set is_ungrouped = false %}
-                {% endif %}
+<!-- Ungrouped Blogs -->
+<div class="ungrouped-blogs">
+    <h3>Other Posts</h3>
+    <div class="blog-list">
+        {# Create a set of all blog IDs that are in groups #}
+        {% set grouped_blog_ids = [] %}
+        {% for group in groups.values() %}
+            {% for blog_id in group.blogs %}
+                {% if grouped_blog_ids.append(blog_id) %}{% endif %}
             {% endfor %}
-            {% if is_ungrouped %}
-            <div class="blog-item">
-                <a href="{{ url_for('blog_detail', blog_id=blog_id) }}" class="blog-title">
-                    {{ blog.title }}
+        {% endfor %}
+        
+        {# Show only blogs that are NOT in the grouped_blog_ids list #}
+        {% for blog_id, blog in blogs.items() %}
+        {% if blog and blog.title and blog_id not in grouped_blog_ids %}
+        <div class="blog-item">
+            <a href="{{ url_for('blog_detail', blog_id=blog_id) }}" class="blog-title">
+                {{ blog.title }}
+            </a>
+            {% if blog.subsections %}
+            <button class="toggle-btn" onclick="toggleSubsections('{{ blog_id }}')">
+                <i id="icon-{{ blog_id }}" class="fas fa-chevron-down"></i>
+            </button>
+            <div id="subsections-{{ blog_id }}" class="subsections" style="display: none;">
+                {% for subsection in blog.subsections %}
+                <a href="{{ url_for('blog_detail', blog_id=blog_id) }}#subsection-{{ loop.index0 }}"
+                   class="subsection-link">
+                    {{ subsection.title }}
                 </a>
-                {% if blog.subsections %}
-                <button class="toggle-btn" onclick="toggleSubsections('{{ blog_id }}')">
-                    <i id="icon-{{ blog_id }}" class="fas fa-chevron-down"></i>
-                </button>
-                <div id="subsections-{{ blog_id }}" class="subsections" style="display: none;">
-                    {% for subsection in blog.subsections %}
-                    <a href="{{ url_for('blog_detail', blog_id=blog_id) }}#subsection-{{ loop.index0 }}"
-                       class="subsection-link">
-                        {{ subsection.title }}
-                    </a>
-                    {% endfor %}
-                </div>
-                {% endif %}
+                {% endfor %}
             </div>
             {% endif %}
-            {% endfor %}
         </div>
+        {% endif %}
+        {% endfor %}
     </div>
+</div>
 </aside>
 
 <style>
