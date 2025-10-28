@@ -1,0 +1,491 @@
+/* GitHub README Dark Theme exact styling */
+:root {
+  --color-fg-default: #FFFFFF;
+  --color-fg-muted: #8B949E;
+  --color-fg-subtle: #6E7681;
+  --color-canvas-default: #0D1117;
+  --color-canvas-subtle: #161B22;
+  --color-border-default: #30363D;
+  --color-border-muted: #21262D;
+  --color-neutral-muted: rgba(110, 118, 129, 0.4);
+  --color-accent-fg: #58A6FF;
+  --color-accent-emphasis: #1F6FEB;
+  --color-danger-fg: #F85149;
+  --color-success-fg: #3FB950;
+  --color-attention-fg: #D29922;
+  --color-done-fg: #A371F7;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-fg-default);
+  background-color: var(--color-canvas-default);
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+/* ===== Base Layout ===== */
+.layout {
+  display: flex;
+  gap: 32px;
+  margin-top: 0;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  flex: 0 0 256px;
+  background: var(--color-canvas-default);
+  padding: 0;
+  border: 1px solid var(--color-border-default);
+  border-radius: 6px;
+  height: fit-content;
+}
+
+.sidebar h2 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  padding: 16px;
+  background: var(--color-canvas-subtle);
+  border-bottom: 1px solid var(--color-border-default);
+  color: var(--color-fg-default);
+}
+
+.blog-list {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.blog-item.active {
+  background: var(--color-canvas-subtle);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-default);
+}
+
+.blog-title {
+  font-weight: 600;
+  color: var(--color-accent-fg);
+  text-decoration: none;
+  word-wrap: break-word;
+  display: block;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.blog-title:hover {
+  text-decoration: underline;
+  color: var(--color-accent-fg);
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  float: right;
+  color: var(--color-fg-muted);
+  padding: 0;
+  margin: -2px 0 0 0;
+}
+
+.subsections {
+  margin-top: 8px;
+  display: none;
+}
+
+.subsection-link {
+  display: block;
+  padding: 4px 0 4px 12px;
+  font-size: 12px;
+  color: var(--color-fg-default);
+  text-decoration: none;
+  word-wrap: break-word;
+  border-left: 2px solid var(--color-border-default);
+  margin-left: 4px;
+}
+
+.subsection-link:hover {
+  color: var(--color-accent-fg);
+  text-decoration: underline;
+}
+
+.sidebar-note {
+  margin-top: 16px;
+  padding: 16px;
+  border-top: 1px solid var(--color-border-default);
+  background: var(--color-canvas-subtle);
+}
+
+.sidebar-note a {
+  color: var(--color-accent-fg);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sidebar-note a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Main Content ===== */
+.main-content {
+  flex: 1;
+  padding: 0;
+  background: var(--color-canvas-default);
+  overflow-x: hidden;
+  word-wrap: break-word;
+}
+
+.blog-content {
+  max-width: none;
+}
+
+.blog-content h1 {
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  padding: 0 0 8px 0;
+  border-bottom: 1px solid var(--color-border-default);
+  word-wrap: break-word;
+  color: var(--color-fg-default);
+  line-height: 1.25;
+}
+
+.subsection h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 32px 0 16px 0;
+  padding: 0 0 8px 0;
+  border-bottom: 1px solid var(--color-border-default);
+  word-wrap: break-word;
+  color: var(--color-fg-default);
+  line-height: 1.25;
+}
+
+.content-html {
+  line-height: 1.5;
+  color: var(--color-fg-default);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  font-size: 14px;
+}
+
+/* GitHub README Dark Theme exact content styling */
+.content-html p {
+  margin: 0 0 16px 0;
+  padding: 0;
+  color: var(--color-fg-default);
+}
+
+.content-html ul, 
+.content-html ol {
+  margin: 0 0 16px 0;
+  padding: 0 0 0 32px;
+  color: var(--color-fg-default);
+}
+
+.content-html li {
+  margin: 4px 0;
+  padding: 0;
+  color: var(--color-fg-default);
+}
+
+.content-html li > p {
+  margin: 0;
+  color: var(--color-fg-default);
+}
+
+.content-html h1 {
+  font-size: 32px;
+  font-weight: 600;
+  margin: 24px 0 16px 0;
+  padding: 0 0 8px 0;
+  border-bottom: 1px solid var(--color-border-default);
+  color: var(--color-fg-default);
+}
+
+.content-html h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 24px 0 16px 0;
+  padding: 0 0 8px 0;
+  border-bottom: 1px solid var(--color-border-default);
+  color: var(--color-fg-default);
+}
+
+.content-html h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 24px 0 16px 0;
+  padding: 0;
+  color: var(--color-fg-default);
+}
+
+.content-html h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 16px 0 8px 0;
+  padding: 0;
+  color: var(--color-fg-default);
+}
+
+.content-html h5 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 16px 0 8px 0;
+  padding: 0;
+  color: var(--color-fg-default);
+}
+
+.content-html h6 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 16px 0 8px 0;
+  padding: 0;
+  color: var(--color-fg-muted);
+}
+
+.content-html blockquote {
+  margin: 16px 0;
+  padding: 0;
+  color: var(--color-fg-muted);
+  border-left: 4px solid var(--color-border-default);
+  font-style: italic;
+}
+.content-html blockquote p{
+  padding: 0 12px;
+}
+
+.content-html table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow: auto;
+  margin: 16px 0;
+}
+
+.content-html table th {
+  font-weight: 600;
+  padding: 6px 13px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-canvas-subtle);
+  color: var(--color-fg-default);
+}
+
+.content-html table td {
+  padding: 6px 13px;
+  border: 1px solid var(--color-border-default);
+  color: var(--color-fg-default);
+}
+
+.content-html table tr {
+  background-color: var(--color-canvas-default);
+  border-top: 1px solid var(--color-border-muted);
+}
+
+.content-html table tr:nth-child(2n) {
+  background-color: var(--color-canvas-subtle);
+}
+
+/* Inline code styling - GitHub Dark exact */
+.content-html code:not(pre code) {
+  background: var(--color-neutral-muted);
+  color: var(--color-fg-default);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  padding: 2px 4px;
+  border-radius: 6px;
+  font-size: 85%;
+  margin: 0;
+}
+
+/* Code blocks styling - GitHub Dark exact */
+.content-html pre {
+  background: var(--color-canvas-subtle);
+  color: var(--color-fg-default);
+  padding: 16px;
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+  overflow-x: auto;
+  line-height: 1.45;
+  margin: 16px 0;
+  border: 1px solid var(--color-border-default);
+}
+
+.content-html pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: 100%;
+  color: var(--color-fg-default);
+}
+
+/* Code block with language label */
+.code-block {
+  position: relative;
+  margin: 16px 0;
+}
+
+
+.language-label {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(48, 54, 61, 0.9);
+  color: var(--color-fg-muted);
+  padding: 2px 8px;
+  font-size: 11px;
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  text-transform: uppercase;
+  font-weight: 600;
+  border: 1px solid var(--color-border-default);
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(4px);
+}
+
+/* Links - GitHub Dark exact */
+.content-html a {
+  color: var(--color-accent-fg);
+  text-decoration: none;
+}
+
+.content-html a:hover {
+  text-decoration: underline;
+  color: var(--color-accent-fg);
+}
+
+/* GitHub Dark style horizontal rule */
+.content-html hr {
+  height: 1px;
+  padding: 0;
+  margin: 24px 0;
+  background-color: var(--color-border-default);
+  border: 0;
+}
+
+/* GitHub Dark style task lists */
+.content-html .task-list-item {
+  list-style-type: none;
+}
+
+.content-html .task-list-item-checkbox {
+  margin: 0 8px 0 -20px;
+  vertical-align: middle;
+}
+
+/* GitHub Dark style images */
+.content-html img {
+  max-width: 100%;
+  max-height: 500px;
+  box-sizing: border-box;
+  background-color: var(--color-canvas-default);
+}
+
+/* Force all text to be white */
+* {
+  color: var(--color-fg-default);
+}
+
+/* Specific overrides for muted text */
+.sidebar h2,
+.content-html h6{
+  color: var(--color-fg-muted) !important;
+}
+
+.content-html blockquote{
+  color: var(--color-canvas-default) !important;
+}
+
+/* Links should stay blue */
+.blog-title,
+.sidebar-note a,
+.content-html a {
+  color: var(--color-accent-fg) !important;
+}
+
+/* ===== Responsive Styles ===== */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+  
+  .layout {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .sidebar {
+    flex: 1;
+    order: 2;
+  }
+
+  .main-content {
+    order: 1;
+  }
+
+  .blog-content h1 {
+    font-size: 24px;
+  }
+
+  .blog-content h2 {
+    font-size: 20px;
+  }
+  
+  .blog-content h3 {
+    font-size: 18px;
+  }
+
+  .subsection h2 {
+    font-size: 20px;
+  }
+  .language-label{
+  color: red;
+  font-size: 10px;
+  top: -5px;
+  right: 0;
+  font-weight: 500;
+}
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 8px;
+  }
+
+  .blog-content h1 {
+    font-size: 20px;
+  }
+
+  .blog-content h2 {
+    font-size: 18px;
+  }
+  
+  .content-html {
+    font-size: 13px;
+  }
+
+  .content-html pre {
+    font-size: 12px;
+    padding: 12px;
+  }
+    .language-label{
+  color: blue;
+  font-size: 9px;
+  top: -5px;
+  right: 0;
+  font-weight: 500;
+}
+}
