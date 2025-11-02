@@ -8,8 +8,27 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/blog_detail.css') }}">
 {% endblock %}
 
+
+
 <!------------Content Blocks---------->
 {% block content %}
+<!--Mobile Subsection List-->
+<div class="mobile-subsection-list">
+  <div class="mobile-subsection-wrapper">
+    {% if blog.subsections %}
+    <div class="mobile-subsection-container">
+      {% for subsection in blog.subsections %}
+      <a href="#subsection-{{ loop.index0 }}" class="mobile-subsection-item">
+        {{ subsection.title }}
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+
+
 <div class="container">
   <div class="layout">
     <!-- Sidebar -->

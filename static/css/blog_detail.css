@@ -209,6 +209,75 @@ body {
   transition: transform 0.1s;
 }
 
+/* ===== Mobile Horizontal Subsection List ===== */
+.mobile-subsection-list {
+  display: none;
+  width: 100%;
+  background: var(--color-canvas-default);
+  border-bottom: 1px solid var(--color-border-default);
+  position: relative;
+  z-index: 99;
+  margin-top: 0;
+}
+
+.mobile-subsection-wrapper {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.mobile-subsection-container {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.mobile-subsection-container::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-subsection-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  font-size: 12px;
+  border-radius: 0;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-canvas-subtle);
+  color: var(--color-fg-default);
+  text-decoration: none;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  transition: all 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  font-weight: 500;
+}
+
+.mobile-subsection-item:hover {
+  background: linear-gradient(135deg, #a82525, #0725d1);
+  color: var(--color-fg-default);
+  border-color: #555;
+}
+
+.mobile-subsection-item:active {
+  transform: scale(0.98);
+  background: linear-gradient(135deg, #404040, #2d2d2d);
+}
+
+/* Active state */
+.mobile-subsection-item.active {
+  background: linear-gradient(135deg, #555, #333);
+  color: var(--color-fg-default);
+  border-color: #666;
+}
+
 
 /*--blog post */
 
@@ -588,6 +657,13 @@ body {
   .subsection-list{
     display: none;
   }
+  .mobile-subsection-list {
+    display: block;
+  }
+  
+  .mobile-subsection-wrapper {
+    padding: 0 16px;
+  }
 
   .main-content {
     order: 1;
@@ -642,12 +718,34 @@ body {
     font-size: 12px;
     padding: 12px;
   }
-    .language-label{
+  .language-label{
   color: blue;
   font-size: 9px;
   top: -5px;
   right: 0;
   font-weight: 500;
-}
+  }
+
+  .mobile-subsection-wrapper {
+    padding: 0 8px;
+  }
+
+  .mobile-subsection-container {
+    padding: 10px 0;
+    gap: 6px;
+  }
+
+  .mobile-subsection-item {
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+
+  .subsection-number {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    margin-right: 6px;
+  }
+
 }
 
