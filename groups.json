@@ -3,7 +3,27 @@
         "name": "React",
         "description": "",
         "blogs": [
-            "2"
+            "2",
+            "5"
+        ]
+    },
+    "2": {
+        "name": "React Core Concepts",
+        "description": "",
+        "blogs": [
+            "3",
+            "6",
+            "12",
+            "7"
+        ]
+    },
+    "3": {
+        "name": "Others",
+        "description": "",
+        "blogs": [
+            "1",
+            "11",
+            "8"
         ]
     }
 }
