@@ -6,6 +6,7 @@
 <!------------Style link-------------->
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/blog_detail.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/code-copy.css') }}">
 {% endblock %}
 
 
@@ -100,4 +101,5 @@
 <!-----------JS Link----------->
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/blog_detail.js') }}"></script>
+<script src="{{ url_for('static', filename='js/code-copy.js') }}"></script>
 {% endblock %}

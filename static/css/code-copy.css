@@ -1,0 +1,124 @@
+/* Code block wrapper */
+.code-block-wrapper {
+    position: relative;
+    margin: 1.5em 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #1e1e1e;
+}
+
+/* Code block header */
+.code-block-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: #2d2d2d;
+    border-bottom: 1px solid #3d3d3d;
+}
+
+/* Language label */
+.code-language {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #9cdcfe;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Copy button */
+.copy-button {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #ffffff;
+    background: #3a3a3a;
+    border: 1px solid #4a4a4a;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.copy-button:hover {
+    background: #4a4a4a;
+    border-color: #5a5a5a;
+}
+
+.copy-button:active {
+    transform: scale(0.95);
+}
+
+/* Copied state */
+.copy-button.copied {
+    background: #0e7c0e;
+    border-color: #0e7c0e;
+    color: #ffffff;
+}
+
+.copy-button.copied:hover {
+    background: #0a6b0a;
+    border-color: #0a6b0a;
+}
+
+/* Pre and code styling */
+.code-block-wrapper pre {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+    background: #1e1e1e;
+}
+
+.code-block-wrapper pre code {
+    display: block;
+    padding: 0;
+    background: transparent;
+    color: #d4d4d4;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* Scrollbar styling for code blocks */
+.code-block-wrapper pre::-webkit-scrollbar {
+    height: 8px;
+}
+
+.code-block-wrapper pre::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
+.code-block-wrapper pre::-webkit-scrollbar-thumb {
+    background: #4a4a4a;
+    border-radius: 4px;
+}
+
+.code-block-wrapper pre::-webkit-scrollbar-thumb:hover {
+    background: #5a5a5a;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .code-block-header {
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .code-language {
+        font-size: 0.75rem;
+    }
+    
+    .copy-button {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+    }
+    
+    .code-block-wrapper pre {
+        padding: 0.8rem;
+    }
+    
+    .code-block-wrapper pre code {
+        font-size: 0.85rem;
+    }
+}
