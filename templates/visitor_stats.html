@@ -52,21 +52,31 @@
         </div>
     </div>
 
+
     <!-- Charts Grid -->
     <div class="charts-grid">
+        <!-- Chart 1: Daily Visits (Top Left) -->
         <div class="chart-container">
             <canvas id="dailyVisitsChart"></canvas>
         </div>
-        <div class="chart-container">
-            <canvas id="blogPopularityChart"></canvas>
-        </div>
-        <div class="chart-container full-width">
-            <canvas id="visitTrendsChart"></canvas>
-        </div>
+        
+        <!-- Chart 2: Visitor Metrics (Top Right) -->
         <div class="chart-container">
             <canvas id="visitorMetricsChart"></canvas>
         </div>
+        
+        <!-- Chart 3: Blog Distribution (FULL WIDTH) -->
+        <div class="chart-container">
+            <canvas id="blogPopularityChart"></canvas>
+        </div>
+        
+        <!-- Chart 4: Visit Trends (FULL WIDTH) -->
+        <div class="chart-container">
+            <canvas id="visitTrendsChart"></canvas>
+        </div>
     </div>
+
+
 
     <!-- Content Grid - Popular Posts & Daily Visits Side by Side -->
     <div class="content-grid">
@@ -77,16 +87,18 @@
             </div>
             
             {% if blog_stats %}
+            <!-- Most Popular Blogs Section -->
             <div class="popular-blogs">
-                {% for blog in blog_stats %}
+                {% for blog_stat in blog_stats %}
                 <div class="popular-blog-item">
+                    <div class="blog-rank">{{ loop.index }}</div>
                     <div class="blog-info">
-                        <h4>{{ blog.title }}</h4>
-                        <span class="blog-id">ID: {{ blog.id if blog.id else 'homepage' }}</span>
+                        <span class="blog-id">ID: {{ blog_stat.id }}</span>
+                        <h4>{{ blog_stat.title }}</h4>
                     </div>
                     <div class="visit-count">
-                        <span class="count">{{ blog.visits }}</span>
-                        <span class="label">views</span>
+                        <span class="count">{{ blog_stat.visits }}</span>
+                        <span class="label">visits</span>
                     </div>
                 </div>
                 {% endfor %}

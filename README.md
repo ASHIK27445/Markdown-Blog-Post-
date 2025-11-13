@@ -49,4 +49,4 @@ Your branch is fully restored.
 - Fixed subsection management
 - Fixed responsive design issues
 - Fixed error handling throughout the app
-
+- v3.3 - fixing visit stats

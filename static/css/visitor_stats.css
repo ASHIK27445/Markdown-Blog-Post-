@@ -247,7 +247,7 @@
     cursor: not-allowed;
 }
 
-/* Charts Grid with proper spacing */
+/* Charts Grid - Better layout */
 .charts-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -268,25 +268,47 @@
     padding: 1.5rem;
     border: 1px solid rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(20px);
-    height: 300px;
+    height: 400px;
     position: relative;
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-.chart-container:nth-child(odd) {
+/* Daily Visits Chart - Top Left */
+.chart-container:nth-child(1) {
     background: linear-gradient(225deg, 
-        rgba(44, 62, 80, 0.2) 0%, 
-        rgba(22, 160, 133, 0.1) 100%);
+        rgba(44, 62, 80, 0.25) 0%, 
+        rgba(22, 160, 133, 0.15) 100%);
 }
 
-.chart-container:nth-child(even) {
+/* Visitor Metrics Chart - Top Right */
+.chart-container:nth-child(2) {
+    background: linear-gradient(135deg, 
+        rgba(39, 174, 96, 0.25) 0%, 
+        rgba(22, 160, 133, 0.15) 100%);
+}
+
+/* Blog Distribution Chart - Full Width Row */
+.chart-container:nth-child(3) {
+    grid-column: 1 / -1;
+    height: 400px;
     background: linear-gradient(45deg, 
-        rgba(52, 73, 94, 0.2) 0%, 
+        rgba(52, 73, 94, 0.25) 0%, 
+        rgba(39, 174, 96, 0.15) 100%);
+}
+
+/* Visit Trends Chart - Full Width Row */
+.chart-container:nth-child(4) {
+    grid-column: 1 / -1;
+    height: 350px;
+    background: linear-gradient(135deg, 
+        rgba(44, 62, 80, 0.2) 0%, 
+        rgba(255, 255, 255, 0.1) 50%,
         rgba(39, 174, 96, 0.1) 100%);
 }
 
+/* Visit Trends Chart - Full width at bottom */
 .chart-container.full-width {
     grid-column: 1 / -1;
     height: 350px;
@@ -294,6 +316,7 @@
         rgba(44, 62, 80, 0.2) 0%, 
         rgba(255, 255, 255, 0.1) 50%,
         rgba(39, 174, 96, 0.1) 100%);
+    display: none; /* Hide this class since we're not using it */
 }
 
 /* Content Grid - 2 columns for popular posts and daily visits */
@@ -336,70 +359,155 @@
         rgba(255, 255, 255, 0.05) 100%);
 }
 
-/* Popular Blogs Section */
+/* IMPROVED Popular Blogs Section - Top 6 in grid */
 .popular-blogs {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
 }
 
 .popular-blog-item {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.25rem;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    flex-direction: column;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.2) 0%, 
+        rgba(255, 255, 255, 0.1) 100%);
+    border-radius: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.25);
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.popular-blog-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        #2c3e50, 
+        #16a085, 
+        #27ae60);
+}
+
+.popular-blog-item:nth-child(1) {
+    border-color: rgba(255, 215, 0, 0.6);
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+}
+
+.popular-blog-item:nth-child(1)::before {
+    background: linear-gradient(90deg, #FFD700, #FFA500);
+}
+
+.popular-blog-item:nth-child(2) {
+    border-color: rgba(192, 192, 192, 0.6);
+    box-shadow: 0 4px 20px rgba(192, 192, 192, 0.3);
+}
+
+.popular-blog-item:nth-child(2)::before {
+    background: linear-gradient(90deg, #C0C0C0, #A8A8A8);
+}
+
+.popular-blog-item:nth-child(3) {
+    border-color: rgba(205, 127, 50, 0.6);
+    box-shadow: 0 4px 20px rgba(205, 127, 50, 0.3);
+}
+
+.popular-blog-item:nth-child(3)::before {
+    background: linear-gradient(90deg, #CD7F32, #8B4513);
 }
 
 .popular-blog-item:hover {
     background: rgba(255, 255, 255, 0.25);
-    transform: translateX(5px);
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px) scale(1.02);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.blog-rank {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.3), 
+        rgba(255, 255, 255, 0.1));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.popular-blog-item:nth-child(1) .blog-rank {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-color: #FFD700;
+}
+
+.popular-blog-item:nth-child(2) .blog-rank {
+    background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
+    border-color: #C0C0C0;
+}
+
+.popular-blog-item:nth-child(3) .blog-rank {
+    background: linear-gradient(135deg, #CD7F32, #8B4513);
+    border-color: #CD7F32;
+}
+
+.blog-info {
+    flex: 1;
+    margin-right: 3rem;
 }
 
 .blog-info h4 {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.75rem 0;
     color: #ffffff;
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.1rem;
+    font-weight: 700;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    line-height: 1.3;
 }
 
 .blog-id {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.75rem;
     font-family: 'Courier New', monospace;
     background: rgba(0, 0, 0, 0.3);
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 0.5rem;
 }
 
 .visit-count {
-    text-align: right;
+    margin-top: 1rem;
+    text-align: left;
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    align-items: baseline;
+    gap: 0.5rem;
 }
 
 .visit-count .count {
-    display: block;
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 800;
     background: linear-gradient(135deg, #ffffff, #e9ecef);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     line-height: 1;
-    margin-bottom: 0.25rem;
 }
 
 .visit-count .label {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.8);
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -544,11 +652,20 @@
     }
     
     .chart-container {
-        height: 280px;
+        height: 350px;
+    }
+    
+    .chart-container:nth-child(2) {
+        height: 400px;
+        grid-row: span 1;
     }
     
     .chart-container.full-width {
         height: 320px;
+    }
+    
+    .popular-blogs {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -605,17 +722,12 @@
         padding: 1.5rem;
     }
     
-    .popular-blog-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.75rem;
-        padding: 1rem;
+    .popular-blogs {
+        grid-template-columns: 1fr;
     }
     
-    .visit-count {
-        text-align: left;
-        align-items: flex-start;
-        width: 100%;
+    .popular-blog-item {
+        padding: 1.25rem;
     }
     
     .daily-stat-item {
@@ -658,8 +770,12 @@
     }
     
     .chart-container {
-        height: 250px;
+        height: 280px;
         padding: 1rem;
+    }
+    
+    .chart-container:nth-child(2) {
+        height: 320px;
     }
     
     .chart-container.full-width {

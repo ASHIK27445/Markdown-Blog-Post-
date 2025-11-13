@@ -249,6 +249,30 @@ def visitor_stats():
     # Sort by visits descending
     blog_stats.sort(key=lambda x: x['visits'], reverse=True)
     
+    # Limit to top 6 posts only
+    blog_stats = blog_stats[:6]
+    
+    return render_template('visitor_stats.html', 
+                         stats=stats, 
+                         blog_stats=blog_stats,
+                         blogs=blogs)
+    """Detailed visitor statistics page"""
+    stats = get_visitor_stats()
+    blogs = load_blogs()
+    
+    # Add blog titles to stats
+    blog_stats = []
+    for blog_id, visits in stats['blog_visits'].items():
+        blog_title = blogs.get(blog_id, {}).get('title', 'Unknown Blog') if blog_id else 'Homepage'
+        blog_stats.append({
+            'id': blog_id,
+            'title': blog_title,
+            'visits': visits
+        })
+    
+    # Sort by visits descending
+    blog_stats.sort(key=lambda x: x['visits'], reverse=True)
+    
     return render_template('visitor_stats.html', 
                          stats=stats, 
                          blog_stats=blog_stats,
