@@ -38,6 +38,104 @@
         {% block content %}{% endblock %}
     </main>
 
+    <!----Footer---->
+    <footer class="site-footer">
+        <div class="footer-wave">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+                <path fill="url(#gradient)" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#2c3e50;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#f39c12;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#2c3e50;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
+        
+        <div class="footer-content">
+            <div class="footer-container">
+                <div class="footer-section footer-about">
+                    <h3>📚 BlogApp</h3>
+                    <p>Your destination for quality content and knowledge sharing. Explore, learn, and grow with our curated collection of articles.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://github.com/ASHIK27445" class="social-link" aria-label="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-section footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="{{ url_for('index') }}"><i class="fas fa-chevron-right"></i> Home</a></li>
+                        <li><a href="{{ url_for('admin') }}"><i class="fas fa-chevron-right"></i> Add Post</a></li>
+                        <li><a href="{{ url_for('manage_groups') }}"><i class="fas fa-chevron-right"></i> Manage Groups</a></li>
+                        <li><a href="{{ url_for('visitor_stats') }}"><i class="fas fa-chevron-right"></i> Statistics</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section footer-links">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Technology</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Design</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Development</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Business</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section footer-subscribe">
+                    <h4>Stay Updated</h4>
+                    <p>Subscribe to our newsletter for the latest articles and updates.</p>
+                    <form class="subscribe-form">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                    <div class="footer-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-eye"></i>
+                            <span>{{ visitor_stats.total_visits }}</span>
+                            <small>Total Visits</small>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-users"></i>
+                            <span>{{ visitor_stats.unique_visitors }}</span>
+                            <small>Visitors</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-container">
+                    <p>&copy; 2025 BlogApp. Made with <i class="fas fa-heart heart-icon"></i> by Ai Ashik</p>
+                    <div class="footer-bottom-links">
+                        <a href="#">Privacy Policy</a>
+                        <span>•</span>
+                        <a href="#">Terms of Service</a>
+                        <span>•</span>
+                        <a href="#">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <script>
         function toggleSubsections(blogId) {
             const content = document.getElementById('subsections-' + blogId);

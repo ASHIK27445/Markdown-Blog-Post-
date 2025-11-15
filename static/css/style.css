@@ -454,6 +454,321 @@ body {
     border-color: #a40e26;
 }
 
+/* Footer Styles */
+.site-footer {
+    position: relative;
+    margin-top: auto;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+    color: white;
+}
+
+.footer-wave {
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.footer-wave svg {
+    position: relative;
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 150px;
+}
+
+.footer-content {
+    position: relative;
+    padding: 6rem 2rem 2rem;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: 3rem;
+}
+
+.footer-section h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    font-weight: 800;
+}
+
+.footer-section h4 {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.footer-section h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50px;
+    height: 3px;
+    background: white;
+    border-radius: 2px;
+}
+
+.footer-about p {
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-link {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.social-link:hover {
+    transform: translateY(-5px);
+}
+
+.social-link:nth-child(1):hover { /* Facebook */
+    background: #1877f2;
+    color: white;
+    box-shadow: 0 5px 20px rgba(24, 119, 242, 0.4);
+}
+
+.social-link:nth-child(2):hover { /* Twitter */
+    background: #1da1f2;
+    color: white;
+    box-shadow: 0 5px 20px rgba(29, 161, 242, 0.4);
+}
+
+.social-link:nth-child(3):hover { /* Instagram */
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    color: white;
+    box-shadow: 0 5px 20px rgba(225, 48, 108, 0.4);
+}
+
+.social-link:nth-child(4):hover { /* LinkedIn */
+    background: #0a66c2;
+    color: white;
+    box-shadow: 0 5px 20px rgba(10, 102, 194, 0.4);
+}
+
+.social-link:nth-child(5):hover { /* GitHub */
+    background: #333;
+    color: white;
+    box-shadow: 0 5px 20px rgba(51, 51, 51, 0.4);
+}
+
+.footer-links ul {
+    list-style: none;
+}
+
+.footer-links ul li {
+    margin-bottom: 0.8rem;
+}
+
+.footer-links ul li a {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.footer-links ul li a:hover {
+    color: white;
+    padding-left: 0.5rem;
+}
+
+.footer-links ul li a i {
+    font-size: 0.7rem;
+}
+
+.footer-subscribe p {
+    opacity: 0.9;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.subscribe-form {
+    display: flex;
+    margin-bottom: 2rem;
+}
+
+.subscribe-form input {
+    flex: 1;
+    padding: 0.8rem 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px 0 0 8px;
+    color: white;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.subscribe-form input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.subscribe-form input:focus {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.subscribe-form button {
+    padding: 0.8rem 1.5rem;
+    background: white;
+    color: #667eea;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.subscribe-form button:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateX(3px);
+}
+
+.footer-stats {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    flex: 1;
+}
+
+.stat-item i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-item span {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+}
+
+.stat-item small {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.footer-bottom {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer-bottom .footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    grid-template-columns: 1fr;
+}
+
+.footer-bottom p {
+    margin: 0;
+    opacity: 0.9;
+}
+
+.heart-icon {
+    color: #ff4757;
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    10%, 30% { transform: scale(0.9); }
+    20%, 40% { transform: scale(1.1); }
+}
+
+.footer-bottom-links {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.footer-bottom-links a {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-bottom-links a:hover {
+    color: white;
+}
+
+.footer-bottom-links span {
+    opacity: 0.5;
+}
+
+/* Responsive Design for footer only */
+@media (max-width: 968px) {
+    .footer-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+    
+    .footer-about {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 640px) {
+    .footer-content {
+        padding: 4rem 1rem 1rem;
+    }
+    
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .footer-bottom .footer-container {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .social-links {
+        justify-content: center;
+    }
+    
+    .footer-wave svg {
+        height: 80px;
+    }
+}
+
+
+
+/***Main Responsive Section***/
 /* Responsive Design */
 @media (max-width: 768px) {
     .layout {

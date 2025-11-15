@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Environments
+.env
+venv/
+ENV/
+
+# PyCharm / VS Code
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Cache
+*.cache
+.cache/
+
+# Ignore JSON (optional)
+visitors.json
