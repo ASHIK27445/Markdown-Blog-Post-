@@ -23,4 +23,4 @@ ENV/
 visitors.json
 
 #folder
-static/server-images/
+static/images/server-images/
