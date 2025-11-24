@@ -21,3 +21,6 @@ ENV/
 
 # Ignore JSON (optional)
 visitors.json
+
+#folder
+static/server-images/
