@@ -1,12 +1,30 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session , flash
 import json
 import os
 from markdown import markdown
+from werkzeug.security import generate_password_hash, check_password_hash
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
+import hashlib
+from functools import wraps
+import secrets
+from dotenv import load_dotenv
 import hashlib
 
+# Load environment variables from .env file
+load_dotenv()
+
 app = Flask(__name__)
+
+
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', secrets.token_hex(32))
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2)
+app.config['SESSION_COOKIE_SECURE'] = True  # HTTPS only
+app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JavaScript access
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # CSRF protection
+
+# Admin credentials file
+ADMIN_FILE = 'admin_credentials.json'
 
 BLOGS_FILE = 'blogs.json'
 GROUPS_FILE = 'groups.json'
@@ -48,7 +66,6 @@ def load_blogs():
             print(f"Error loading blogs: {e}")
             return {}
     return {}
-
 
 def save_blogs(blogs):
     with open(BLOGS_FILE, 'w') as f:
@@ -193,6 +210,42 @@ def safe_markdown(text):
     ])
     return html
 
+def init_admin():
+    """Initialize admin credentials if not exists"""
+    if not os.path.exists(ADMIN_FILE):
+        # Default admin credentials (CHANGE THESE!)
+        default_admin = {
+            'username': 'admin',
+            'password': generate_password_hash('admin123', method='pbkdf2:sha256'),
+            'email': 'admin@example.com',
+            'failed_attempts': 0,
+            'locked_until': None
+        }
+        with open(ADMIN_FILE, 'w') as f:
+            json.dump(default_admin, f, indent=4)
+
+def load_admin():
+    """Load admin credentials"""
+    if os.path.exists(ADMIN_FILE):
+        with open(ADMIN_FILE, 'r') as f:
+            return json.load(f)
+    return None
+
+def save_admin(admin_data):
+    """Save admin credentials"""
+    with open(ADMIN_FILE, 'w') as f:
+        json.dump(admin_data, f, indent=4)
+
+def login_required(f):
+    """Decorator to protect routes"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'admin_logged_in' not in session:
+            flash('Please login to access this page', 'error')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.context_processor
 def inject_data():
     return {
@@ -223,7 +276,115 @@ def blog_detail(blog_id):
     
     return render_template('blog_detail.html', blog=blog, blog_id=blog_id, visit_data=visit_data)
 
+#Authentication System
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Admin login page with security features"""
+    if 'admin_logged_in' in session:
+        return redirect(url_for('admin'))
+    
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+        
+        admin = load_admin()
+        
+        if not admin:
+            flash('Admin account not found. Please contact system administrator.', 'error')
+            return render_template('login.html')
+        
+        # Check if account is locked
+        if admin.get('locked_until'):
+            from datetime import datetime
+            locked_until = datetime.fromisoformat(admin['locked_until'])
+            if datetime.now() < locked_until:
+                remaining = (locked_until - datetime.now()).seconds // 60
+                flash(f'Account locked. Try again in {remaining} minutes.', 'error')
+                return render_template('login.html')
+            else:
+                # Unlock account
+                admin['locked_until'] = None
+                admin['failed_attempts'] = 0
+                save_admin(admin)
+        
+        # Validate credentials
+        if username == admin['username'] and check_password_hash(admin['password'], password):
+            # Successful login
+            session.permanent = True
+            session['admin_logged_in'] = True
+            session['username'] = username
+            
+            # Reset failed attempts
+            admin['failed_attempts'] = 0
+            admin['locked_until'] = None
+            save_admin(admin)
+            
+            flash('Login successful!', 'success')
+            return redirect(url_for('admin'))
+        else:
+            # Failed login
+            admin['failed_attempts'] = admin.get('failed_attempts', 0) + 1
+            
+            # Lock account after 5 failed attempts
+            if admin['failed_attempts'] >= 5:
+                from datetime import datetime, timedelta
+                admin['locked_until'] = (datetime.now() + timedelta(minutes=30)).isoformat()
+                save_admin(admin)
+                flash('Too many failed attempts. Account locked for 30 minutes.', 'error')
+            else:
+                save_admin(admin)
+                remaining = 5 - admin['failed_attempts']
+                flash(f'Invalid credentials. {remaining} attempts remaining.', 'error')
+            
+            return render_template('login.html')
+    
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    """Logout admin"""
+    session.clear()
+    flash('Logged out successfully', 'success')
+    return redirect(url_for('index'))
+
+@app.route('/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    """Change admin password"""
+    if request.method == 'POST':
+        current_password = request.form.get('current_password')
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+        
+        admin = load_admin()
+        
+        # Verify current password
+        if not check_password_hash(admin['password'], current_password):
+            flash('Current password is incorrect', 'error')
+            return render_template('change_password.html')
+        
+        # Validate new password
+        if len(new_password) < 8:
+            flash('Password must be at least 8 characters long', 'error')
+            return render_template('change_password.html')
+        
+        if new_password != confirm_password:
+            flash('Passwords do not match', 'error')
+            return render_template('change_password.html')
+        
+        # Update password
+        admin['password'] = generate_password_hash(new_password, method='pbkdf2:sha256')
+        save_admin(admin)
+        
+        flash('Password changed successfully', 'success')
+        return redirect(url_for('admin'))
+    
+    return render_template('change_password.html')
+#-------------------------------------------------------------------
+
+#Admin
 @app.route('/admin')
+@login_required
 def admin():
     blogs = load_blogs()
     groups = load_groups()
@@ -231,6 +392,7 @@ def admin():
     return render_template('admin.html', blogs=blogs, groups=groups, visitor_stats=visitor_stats)
 
 @app.route('/visitor_stats')
+@login_required
 def visitor_stats():
     """Detailed visitor statistics page"""
     stats = get_visitor_stats()
@@ -280,6 +442,7 @@ def visitor_stats():
 
 # New route for groups management
 @app.route('/manage_groups')
+@login_required
 def manage_groups():
     blogs = load_blogs()
     groups = load_groups()
@@ -339,6 +502,7 @@ def delete_group(group_id):
 
 # Existing blog management routes
 @app.route('/create_blog', methods=['POST'])
+@login_required
 def create_blog():
     blogs = load_blogs()
     
@@ -356,6 +520,7 @@ def create_blog():
     return redirect(url_for('admin'))
 
 @app.route('/edit_blog/<blog_id>')
+@login_required
 def edit_blog(blog_id):
     blogs = load_blogs()
     blog = blogs.get(blog_id)
@@ -364,6 +529,7 @@ def edit_blog(blog_id):
     return render_template('edit_blog.html', blog=blog, blog_id=blog_id)
 
 @app.route('/update_blog/<blog_id>', methods=['POST'])
+@login_required
 def update_blog(blog_id):
     blogs = load_blogs()
     
@@ -375,6 +541,7 @@ def update_blog(blog_id):
     return redirect(url_for('admin'))
 
 @app.route('/delete_blog/<blog_id>')
+@login_required
 def delete_blog(blog_id):
     blogs = load_blogs()
     
@@ -457,4 +624,5 @@ def cleanup_blogs():
     return redirect(url_for('admin'))
 
 if __name__ == "__main__":
+    init_admin()
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

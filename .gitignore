@@ -7,6 +7,7 @@ __pycache__/
 .env
 venv/
 ENV/
+env/
 
 # PyCharm / VS Code
 .idea/
@@ -21,6 +22,9 @@ ENV/
 
 # Ignore JSON (optional)
 visitors.json
+
+#Sensetive
+admin_credentials.json
 
 #folder
 static/images/server-images/

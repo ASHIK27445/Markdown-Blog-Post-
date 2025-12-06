@@ -50,3 +50,5 @@ Your branch is fully restored.
 - Fixed responsive design issues
 - Fixed error handling throughout the app
 - v3.3 - fixing visit stats
+
+## V4: Markdown Post v4.0 launching [commit 56]
