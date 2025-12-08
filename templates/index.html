@@ -7,17 +7,6 @@
 
 <!----------Content blocks------>
 {% block content %}
-
-<!-- Loading Screen -->
-<div class="loading-screen" id="loadingScreen">
-    <div class="loading-content">
-        <div class="loading-prompt">
-            $ blog.start<span class="cursor"></span>
-        </div>
-        <div class="loading-text">loading...</div>
-    </div>
-</div>
-
 <div class="container">
     <div class="layout">
 
@@ -30,10 +19,10 @@
             <div class="groups-section">
                 {% for group_id, group in groups.items() %}
                 <div class="group-item">
-                    <div class="group-header" onclick="toggleGroup('{{ group_id }}')">
+                    <div class="group-header">
                         <span class="group-name">{{ group.name }}</span>
                         {% if group.blogs %}
-                        <button class="toggle-btn" onclick="event.stopPropagation(); toggleGroup('{{ group_id }}')">
+                        <button class="toggle-btn" onclick="toggleGroup('{{ group_id }}')">
                             <i id="group-icon-{{ group_id }}" class="fas fa-chevron-down"></i>
                         </button>
                         {% endif %}
@@ -48,7 +37,7 @@
                                     {{ blogs[blog_id].title }}
                                 </a>
                                 {% if blogs[blog_id].subsections %}
-                                <button class="toggle-btn subsection-toggle" onclick="toggleSubsections('{{ blog_id }}')">
+                                <button class="toggle-btn" onclick="toggleSubsections('{{ blog_id }}')">
                                     <i id="icon-{{ blog_id }}" class="fas fa-chevron-down"></i>
                                 </button>
                                 <div id="subsections-{{ blog_id }}" class="subsections" style="display: none;">
@@ -95,7 +84,7 @@
                         {{ blog.title }}
                     </a>
                     {% if blog.subsections %}
-                    <button class="toggle-btn subsection-toggle" onclick="toggleSubsections('{{ blog_id }}')">
+                    <button class="toggle-btn" onclick="toggleSubsections('{{ blog_id }}')">
                         <i id="icon-{{ blog_id }}" class="fas fa-chevron-down"></i>
                     </button>
                     <div id="subsections-{{ blog_id }}" class="subsections" style="display: none;">
@@ -121,7 +110,7 @@
                 <p>Select a blog post from the sidebar to start reading, or visit the admin panel to create new content.</p>
                 <div class="feature-cards">
                     <div class="card">
-                        <i class="fas fa-book-open"></i>
+                        <i class="fas fa-eye"></i>
                         <h3>Read Blogs</h3>
                         <p>Browse through various blog posts and their subsections</p>
                     </div>
@@ -131,494 +120,16 @@
                         <p>All content supports Markdown formatting</p>
                     </div>
                     <div class="card">
-                        <i class="fas fa-tools"></i>
+                        <i class="fas fa-cog"></i>
                         <h3>Easy Management</h3>
                         <p>Use the admin panel to manage all content</p>
                     </div>
                 </div>
-
-                <!-- Floating Bubbles Background -->
-                <div class="bubbles" id="bubblesContainer"></div>
-
-                <div class="poetry-container">
-                    <!-- Title -->
-                    <div class="poetry-title">
-                        <h1>Life's Balance</h1>
-                        <div class="subtitle">~ A reminder to stay balanced ~</div>
-                    </div>
-
-                    <!-- Decorative Line -->
-                    <div class="deco-line"></div>
-
-                    <!-- Poetry Content -->
-                    <div class="poetry-content" id="poetryContent">
-                        <!-- Lines will be added dynamically -->
-                    </div>
-
-                    <!-- Final Message -->
-                    <div class="finale" id="finaleMessage">
-                        <div class="deco-line"></div>
-                        <p class="finale-text">
-                            Don't be too much,<br>
-                            because that too much<br>
-                            can hurt you so much
-                        </p>
-                        <div class="deco-line"></div>
-                    </div>
-                </div>
-
             </div>
         </main>
 
     </div>
 </div>
-<!-- Add this section in your index.html inside main-content, after feature-cards -->
-
-<style>
-/* Floating Bubbles */
-.bubbles {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: 0;
-    pointer-events: none;
-}
-
-.bubble {
-    position: absolute;
-    bottom: -100px;
-    width: 40px;
-    height: 40px;
-    background: radial-gradient(circle, rgba(0, 255, 100, 0.4), transparent);
-    border-radius: 50%;
-    opacity: 0.5;
-    animation: rise 15s infinite ease-in;
-}
-
-@keyframes rise {
-    0% {
-        bottom: -100px;
-        transform: translateX(0) scale(0.5);
-        opacity: 0;
-    }
-    50% {
-        opacity: 0.6;
-    }
-    100% {
-        bottom: 110vh;
-        transform: translateX(100px) scale(1.2);
-        opacity: 0;
-    }
-}
-
-/* Main Container */
-.poetry-container {
-    max-width: 900px;
-    margin: 4rem auto;
-    position: relative;
-}
-
-/* Title */
-.poetry-title {
-    text-align: center;
-    margin-bottom: 4rem;
-    position: relative;
-    z-index: 10;
-}
-
-.poetry-title h1 {
-    font-family: 'Satisfy', cursive;
-    font-size: 3.5rem;
-    background: linear-gradient(45deg, #00ff88, #00ffcc, #00ff88);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin: 0;
-    animation: shimmer 3s linear infinite;
-    filter: drop-shadow(0 0 30px rgba(0, 255, 136, 0.6));
-}
-
-@keyframes shimmer {
-    0% { background-position: 0% center; }
-    100% { background-position: 200% center; }
-}
-
-.subtitle {
-    font-family: 'Quicksand', sans-serif;
-    font-size: 1.2rem;
-    color: #7dd3fc;
-    margin-top: 0.5rem;
-    opacity: 0.8;
-}
-
-/* Poetry Lines */
-.poetry-content {
-    position: relative;
-    z-index: 10;
-}
-
-.verse {
-    font-family: 'Quicksand', sans-serif;
-    font-size: 1.6rem;
-    font-weight: 400;
-    line-height: 2.5;
-    color: #e0f2fe;
-    text-align: center;
-    margin: 2rem 0;
-    opacity: 0;
-    transform: translateY(40px);
-    position: relative;
-}
-
-.verse.active {
-    animation: verseSlide 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-@keyframes verseSlide {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Individual word animation */
-.word {
-    display: inline-block;
-    opacity: 0;
-    transform: translateY(20px);
-    margin-right: 0.3rem;
-}
-
-.word.appear {
-    animation: wordPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
-
-@keyframes wordPop {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Special styling for "too much" */
-.emphasis {
-    font-weight: 700;
-    background: linear-gradient(90deg, #fbbf24, #f59e0b, #fbbf24);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: goldShimmer 2s linear infinite;
-    position: relative;
-    padding: 0 5px;
-}
-
-.emphasis::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #fbbf24, transparent);
-    animation: underlineFlow 2s ease-in-out infinite;
-}
-
-@keyframes goldShimmer {
-    0% { background-position: 0% center; }
-    100% { background-position: 200% center; }
-}
-
-@keyframes underlineFlow {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
-}
-
-/* Final Message */
-.finale {
-    margin-top: 5rem;
-    text-align: center;
-    opacity: 0;
-    transform: scale(0.8) rotateX(-20deg);
-    position: relative;
-    z-index: 10;
-}
-
-.finale.reveal {
-    animation: finaleReveal 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-@keyframes finaleReveal {
-    to {
-        opacity: 1;
-        transform: scale(1) rotateX(0);
-    }
-}
-
-.finale-text {
-    font-family: 'Quicksand', sans-serif;
-    font-size: 2rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, #ff6b9d, #ffa07a, #ff6b9d, #c084fc, #ff6b9d);
-    background-size: 300% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: rainbowShift 4s ease infinite;
-    line-height: 1.8;
-    filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.5));
-}
-
-@keyframes rainbowShift {
-    0%, 100% { background-position: 0% center; }
-    50% { background-position: 100% center; }
-}
-
-/* Decorative Elements */
-.deco-line {
-    width: 150px;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, #00ff88, transparent);
-    margin: 2rem auto;
-    border-radius: 50px;
-    animation: lineGlow 2s ease-in-out infinite;
-}
-
-@keyframes lineGlow {
-    0%, 100% { opacity: 0.3; box-shadow: 0 0 10px #00ff88; }
-    50% { opacity: 1; box-shadow: 0 0 20px #00ff88; }
-}
-
-/* Animated Butterflies */
-.butterfly {
-    position: absolute;
-    font-size: 2rem;
-    opacity: 0;
-    color: #00ffaa;
-    animation: butterflyFly 8s ease-in-out infinite;
-    text-shadow: 0 0 10px #00ffaa;
-    filter: drop-shadow(0 0 5px #00ffaa);
-}
-
-@keyframes butterflyFly {
-    0% {
-        opacity: 0;
-        transform: translate(0, 0) rotate(0deg);
-    }
-    10%, 90% {
-        opacity: 0.7;
-    }
-    50% {
-        transform: translate(200px, -150px) rotate(360deg);
-    }
-    100% {
-        opacity: 0;
-        transform: translate(400px, -50px) rotate(720deg);
-    }
-}
-
-/* Glowing Particles Trail */
-.particle-trail {
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    background: #00ff88;
-    border-radius: 50%;
-    pointer-events: none;
-    animation: particleFade 1s ease-out forwards;
-    box-shadow: 0 0 6px #00ff88;
-}
-
-@keyframes particleFade {
-    to {
-        opacity: 0;
-        transform: translateY(-30px) scale(0);
-    }
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .poetry-title h1 {
-        font-size: 2.5rem;
-    }
-    
-    .verse {
-        font-size: 1.2rem;
-        line-height: 2.2;
-    }
-    
-    .finale-text {
-        font-size: 1.4rem;
-    }
-}
-</style>
-
-<script>
-// Create floating bubbles
-function createBubbles() {
-    const container = document.getElementById('bubblesContainer');
-    if (!container) return;
-    
-    for (let i = 0; i < 20; i++) {
-        const bubble = document.createElement('div');
-        bubble.className = 'bubble';
-        bubble.style.left = Math.random() * 100 + '%';
-        bubble.style.width = (Math.random() * 60 + 20) + 'px';
-        bubble.style.height = bubble.style.width;
-        bubble.style.animationDelay = Math.random() * 5 + 's';
-        bubble.style.animationDuration = (Math.random() * 10 + 10) + 's';
-        container.appendChild(bubble);
-    }
-}
-
-createBubbles();
-
-// Poetry lines
-const verses = [
-    "If you love too much, you will be cheated,",
-    "if you speak too much, you will lie,",
-    "if you cry too much, you will lose your sight,",
-    "if you think too much, you will be depressed,",
-    "if you care too much, you will be taken for granted,",
-    "if you trust too much, you will be betrayed,",
-    "if you work too much, you will lose your life."
-];
-
-const poetryContent = document.getElementById('poetryContent');
-const finaleMessage = document.getElementById('finaleMessage');
-let currentVerse = 0;
-let butterflies = 0;
-
-function createVerse(text) {
-    const verseDiv = document.createElement('div');
-    verseDiv.className = 'verse';
-    
-    const words = text.split(' ');
-    words.forEach((word, index) => {
-        const wordSpan = document.createElement('span');
-        wordSpan.className = 'word';
-        
-        // Highlight "too much"
-        if (word.toLowerCase() === 'too' && words[index + 1]?.toLowerCase() === 'much,') {
-            wordSpan.innerHTML = `<span class="emphasis">too much</span>,`;
-            words[index + 1] = ''; // Skip next word
-        } else if (word.toLowerCase() === 'too' && words[index + 1]?.toLowerCase() === 'much.') {
-            wordSpan.innerHTML = `<span class="emphasis">too much</span>.`;
-            words[index + 1] = '';
-        } else if (word !== '') {
-            wordSpan.textContent = word;
-        }
-        
-        if (word !== '') {
-            verseDiv.appendChild(wordSpan);
-        }
-    });
-    
-    return verseDiv;
-}
-
-function showVerse() {
-    if (currentVerse < verses.length) {
-        const verse = createVerse(verses[currentVerse]);
-        poetryContent.appendChild(verse);
-        
-        setTimeout(() => {
-            verse.classList.add('active');
-            
-            // Animate words
-            const words = verse.querySelectorAll('.word');
-            words.forEach((word, index) => {
-                setTimeout(() => {
-                    word.classList.add('appear');
-                }, index * 100);
-            });
-            
-            // Add butterfly occasionally
-            if (Math.random() > 0.6 && butterflies < 3) {
-                addButterfly();
-                butterflies++;
-            }
-        }, 100);
-        
-        currentVerse++;
-        setTimeout(showVerse, 2500);
-    } else {
-        showFinale();
-    }
-}
-
-function showFinale() {
-    setTimeout(() => {
-        finaleMessage.classList.add('reveal');
-        
-        // Create particle celebration
-        setTimeout(() => {
-            createParticles();
-        }, 500);
-        
-        // Reset after delay
-        setTimeout(resetAnimation, 8000);
-    }, 1500);
-}
-
-function addButterfly() {
-    const butterfly = document.createElement('div');
-    butterfly.className = 'butterfly';
-    butterfly.innerHTML = '🦋';
-    butterfly.style.left = Math.random() * 80 + '%';
-    butterfly.style.top = Math.random() * 60 + 20 + '%';
-    butterfly.style.animationDelay = Math.random() * 2 + 's';
-    poetryContent.appendChild(butterfly);
-}
-
-function createParticles() {
-    for (let i = 0; i < 30; i++) {
-        setTimeout(() => {
-            const particle = document.createElement('div');
-            particle.className = 'particle-trail';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
-            document.body.appendChild(particle);
-            
-            setTimeout(() => particle.remove(), 1000);
-        }, i * 50);
-    }
-}
-
-function resetAnimation() {
-    poetryContent.innerHTML = '';
-    finaleMessage.classList.remove('reveal');
-    currentVerse = 0;
-    butterflies = 0;
-    setTimeout(showVerse, 1000);
-}
-
-// Start animation
-window.addEventListener('load', () => {
-    setTimeout(showVerse, 1000);
-});
-
-// Mouse trail effect
-let isMouseMoving = false;
-document.addEventListener('mousemove', (e) => {
-    if (!isMouseMoving) {
-        isMouseMoving = true;
-        
-        const trail = document.createElement('div');
-        trail.className = 'particle-trail';
-        trail.style.left = e.clientX + 'px';
-        trail.style.top = e.clientY + 'px';
-        document.body.appendChild(trail);
-        
-        setTimeout(() => trail.remove(), 1000);
-        setTimeout(() => isMouseMoving = false, 50);
-    }
-});
-</script>
 {% endblock %}
 
 <!-----------JS Link----------->
