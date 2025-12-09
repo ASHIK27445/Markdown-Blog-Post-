@@ -10,6 +10,8 @@ from functools import wraps
 import secrets
 from dotenv import load_dotenv
 import hashlib
+import secrets
+import string
 
 # Load environment variables from .env file
 load_dotenv()
@@ -29,6 +31,7 @@ ADMIN_FILE = 'admin_credentials.json'
 BLOGS_FILE = 'blogs.json'
 GROUPS_FILE = 'groups.json'
 VISITORS_FILE = 'visitors.json'
+TEMP_USERS_FILE = 'temp_users.json'
 
 def load_blogs():
     if os.path.exists(BLOGS_FILE):
@@ -246,30 +249,142 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+# Helper functions for temp users
+def load_temp_users():
+    """Load temporary users data"""
+    if os.path.exists(TEMP_USERS_FILE):
+        try:
+            with open(TEMP_USERS_FILE, 'r') as f:
+                temp_users = json.load(f)
+                
+                # Replace codes from environment variables if available
+                for username in temp_users:
+                    env_code = os.getenv(f'{username.upper()}_CODE')
+                    if env_code:
+                        temp_users[username]['code'] = env_code
+                
+                return temp_users
+        except (json.JSONDecodeError, Exception) as e:
+            print(f"Error loading temp users: {e}")
+            return {}
+    return {}
+
+def save_temp_users(temp_users):
+    """Save temporary users data"""
+    with open(TEMP_USERS_FILE, 'w') as f:
+        json.dump(temp_users, f, indent=4)
+
+def generate_access_code(length=8):
+    """Generate a random access code"""
+    characters = string.ascii_uppercase + string.digits
+    return ''.join(secrets.choice(characters) for _ in range(length))
+
+def is_temp_user_valid(username, code):
+    """Check if temp user credentials are valid and not expired"""
+    temp_users = load_temp_users()
+    
+    if username not in temp_users:
+        return False, None
+    
+    user = temp_users[username]
+    
+    # Check if code matches
+    if user['code'] != code:
+        return False, None
+    
+    # Check if expired
+    expiration = datetime.fromisoformat(user['expiration'])
+    if datetime.now() > expiration:
+        return False, None
+    
+    return True, user
+
+def temp_login_required(f):
+    """Decorator to protect routes for temp users"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # Check if admin is logged in
+        if 'admin_logged_in' in session:
+            return f(*args, **kwargs)
+        
+        # Check if temp user is logged in
+        if 'temp_user_logged_in' not in session:
+            flash('Please login to access this content', 'error')
+            return redirect(url_for('temp_login'))
+        
+        # Verify temp user is still valid
+        username = session.get('temp_username')
+        code = session.get('temp_code')
+        
+        is_valid, user = is_temp_user_valid(username, code)
+        if not is_valid:
+            session.clear()
+            flash('Your access has expired. Please login again.', 'error')
+            return redirect(url_for('temp_login'))
+        
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.context_processor
 def inject_data():
+    is_temp_user = 'temp_user_logged_in' in session
+    temp_username = session.get('temp_username', '')
+    
     return {
         'blogs': load_blogs(),
         'groups': load_groups(),
-        'visitor_stats': get_visitor_stats()
+        'visitor_stats': get_visitor_stats(),
+        'is_temp_user': is_temp_user,
+        'temp_username': temp_username
     }
 
 @app.route('/')
 def index():
-    track_visit()  # Track homepage visits
+    track_visit()
     blogs = load_blogs()
     groups = load_groups()
+    
+    # Check if temp user can see all hidden content
+    temp_can_see_all = session.get('temp_can_see_all_hidden', False)
+    
+    # Filter out hidden content for users without permission
+    if 'admin_logged_in' not in session:
+        if not temp_can_see_all:
+            # Filter hidden blogs
+            blogs = {blog_id: blog for blog_id, blog in blogs.items() 
+                    if not blog.get('hidden', False)}
+            
+            # Filter hidden groups
+            groups = {group_id: group for group_id, group in groups.items() 
+                     if not group.get('hidden', False)}
+    
     return render_template('index.html', blogs=blogs, groups=groups)
 
 @app.route('/blog/<blog_id>')
 def blog_detail(blog_id):
-    visit_data = track_visit(blog_id)  # Track individual blog visits
+    visit_data = track_visit(blog_id)
     blogs = load_blogs()
     blog = blogs.get(blog_id)
+    
     if not blog:
         return "Blog not found", 404
     
-    # Convert markdown to HTML using our safe function
+    # Check if blog is hidden
+    if blog.get('hidden', False):
+        # Allow admin
+        if 'admin_logged_in' in session:
+            pass  # Admin can see
+        # Check if temp user has permission
+        elif 'temp_user_logged_in' in session:
+            if not session.get('temp_can_see_all_hidden', False):
+                flash('This blog post is not available', 'error')
+                return redirect(url_for('index'))
+        # Block normal users
+        else:
+            flash('This blog post is not available', 'error')
+            return redirect(url_for('index'))
+    
+    # Convert markdown to HTML
     blog['content_html'] = safe_markdown(blog['content'])
     for subsection in blog.get('subsections', []):
         subsection['content_html'] = safe_markdown(subsection['content'])
@@ -450,6 +565,7 @@ def manage_groups():
 
 # Group Management Routes
 @app.route('/create_group', methods=['POST'])
+@login_required
 def create_group():
     groups = load_groups()
     
@@ -460,10 +576,12 @@ def create_group():
     groups[group_id] = {
         'name': group_name,
         'description': group_description,
-        'blogs': []  # List of blog IDs in this group
+        'blogs': [],
+        'hidden': False  # Default to visible
     }
     
     save_groups(groups)
+    flash(f'Group "{group_name}" created successfully', 'success')
     return redirect(url_for('manage_groups'))
 
 @app.route('/add_blog_to_group', methods=['POST'])
@@ -513,10 +631,12 @@ def create_blog():
     blogs[blog_id] = {
         'title': title,
         'content': content,
-        'subsections': []
+        'subsections': [],
+        'hidden': False  # Default to visible
     }
     
     save_blogs(blogs)
+    flash(f'Blog "{title}" created successfully', 'success')
     return redirect(url_for('admin'))
 
 @app.route('/edit_blog/<blog_id>')
@@ -622,6 +742,214 @@ def cleanup_blogs():
     """Clean up malformed blog entries"""
     blogs = load_blogs()  # This will now clean the data
     return redirect(url_for('admin'))
+
+# Toggle Blog Visibility (Hide/Show)
+@app.route('/toggle_blog_visibility/<blog_id>')
+@login_required
+def toggle_blog_visibility(blog_id):
+    """Toggle blog visibility between hidden and visible"""
+    blogs = load_blogs()
+    
+    if blog_id in blogs:
+        # Toggle the hidden status
+        current_status = blogs[blog_id].get('hidden', False)
+        blogs[blog_id]['hidden'] = not current_status
+        save_blogs(blogs)
+        
+        status = "hidden" if not current_status else "visible"
+        flash(f'Blog "{blogs[blog_id]["title"]}" is now {status}', 'success')
+    
+    return redirect(request.referrer or url_for('admin'))
+
+# Toggle Group Visibility (Hide/Show)
+@app.route('/toggle_group_visibility/<group_id>')
+@login_required
+def toggle_group_visibility(group_id):
+    """Toggle group visibility between hidden and visible"""
+    groups = load_groups()
+    
+    if group_id in groups:
+        # Toggle the hidden status
+        current_status = groups[group_id].get('hidden', False)
+        groups[group_id]['hidden'] = not current_status
+        save_groups(groups)
+        
+        status = "hidden" if not current_status else "visible"
+        flash(f'Group "{groups[group_id]["name"]}" is now {status}', 'success')
+    
+    return redirect(request.referrer or url_for('manage_groups'))
+
+
+# ============================================
+# TEMP USER ROUTES
+# ============================================
+
+@app.route('/temp_login', methods=['GET', 'POST'])
+def temp_login():
+    """Temporary user login page"""
+    if 'temp_user_logged_in' in session or 'admin_logged_in' in session:
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        code = request.form.get('code', '').strip().upper()
+        
+        is_valid, user = is_temp_user_valid(username, code)
+        
+        if is_valid:
+            # Successful login
+            session.permanent = True
+            session['temp_user_logged_in'] = True
+            session['temp_username'] = username
+            session['temp_code'] = code
+            session['temp_can_see_all_hidden'] = user.get('can_see_all_hidden', False)
+            
+            flash(f'Welcome, {username}! Access valid until {user["expiration"][:10]}', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid username or access code, or your access has expired.', 'error')
+    
+    return render_template('temp_login.html')
+
+@app.route('/temp_logout')
+def temp_logout():
+    """Logout temporary user"""
+    session.clear()
+    flash('Logged out successfully', 'success')
+    return redirect(url_for('index'))
+
+@app.route('/manage_temp_users')
+@login_required
+def manage_temp_users():
+    """Admin page to manage temporary users"""
+    temp_users = load_temp_users()
+    
+    # Add status to each user
+    now = datetime.now()
+    for username, user in temp_users.items():
+        expiration = datetime.fromisoformat(user['expiration'])
+        user['is_expired'] = now > expiration
+        user['days_remaining'] = (expiration - now).days if not user['is_expired'] else 0
+    
+    return render_template('manage_temp_users.html', temp_users=temp_users)
+
+@app.route('/create_temp_user', methods=['POST'])
+@login_required
+def create_temp_user():
+    """Create a new temporary user"""
+    temp_users = load_temp_users()
+    
+    username = request.form.get('username', '').strip()
+    duration_days = int(request.form.get('duration_days', 7))
+    can_see_all_hidden = request.form.get('can_see_all_hidden') == 'on'
+    
+    # Validate username
+    if not username:
+        flash('Username is required', 'error')
+        return redirect(url_for('manage_temp_users'))
+    
+    if username in temp_users:
+        flash('Username already exists', 'error')
+        return redirect(url_for('manage_temp_users'))
+    
+    # Generate access code
+    code = generate_access_code()
+    
+    # Calculate expiration
+    expiration = datetime.now() + timedelta(days=duration_days)
+    
+    # Create temp user
+    temp_users[username] = {
+        'code': code,
+        'created_at': datetime.now().isoformat(),
+        'expiration': expiration.isoformat(),
+        'can_see_all_hidden': can_see_all_hidden,
+        'duration_days': duration_days
+    }
+    
+    save_temp_users(temp_users)
+    
+    flash(f'Temp user created! Username: {username}, Code: {code}', 'success')
+    return redirect(url_for('manage_temp_users'))
+
+@app.route('/extend_temp_user/<username>', methods=['POST'])
+@login_required
+def extend_temp_user(username):
+    """Extend temporary user expiration"""
+    temp_users = load_temp_users()
+    
+    if username not in temp_users:
+        flash('User not found', 'error')
+        return redirect(url_for('manage_temp_users'))
+    
+    additional_days = int(request.form.get('additional_days', 7))
+    
+    # Get current expiration
+    current_expiration = datetime.fromisoformat(temp_users[username]['expiration'])
+    
+    # If already expired, extend from now
+    if datetime.now() > current_expiration:
+        new_expiration = datetime.now() + timedelta(days=additional_days)
+    else:
+        new_expiration = current_expiration + timedelta(days=additional_days)
+    
+    temp_users[username]['expiration'] = new_expiration.isoformat()
+    temp_users[username]['duration_days'] = temp_users[username].get('duration_days', 0) + additional_days
+    
+    save_temp_users(temp_users)
+    
+    flash(f'Extended {username}\'s access by {additional_days} days', 'success')
+    return redirect(url_for('manage_temp_users'))
+
+@app.route('/toggle_temp_user_permission/<username>')
+@login_required
+def toggle_temp_user_permission(username):
+    """Toggle temp user permission to see all hidden content"""
+    temp_users = load_temp_users()
+    
+    if username not in temp_users:
+        flash('User not found', 'error')
+        return redirect(url_for('manage_temp_users'))
+    
+    current_permission = temp_users[username].get('can_see_all_hidden', False)
+    temp_users[username]['can_see_all_hidden'] = not current_permission
+    
+    save_temp_users(temp_users)
+    
+    status = "CAN" if not current_permission else "CANNOT"
+    flash(f'{username} {status} now see all hidden content', 'success')
+    return redirect(url_for('manage_temp_users'))
+
+@app.route('/delete_temp_user/<username>')
+@login_required
+def delete_temp_user(username):
+    """Delete a temporary user"""
+    temp_users = load_temp_users()
+    
+    if username in temp_users:
+        del temp_users[username]
+        save_temp_users(temp_users)
+        flash(f'Temp user {username} deleted', 'success')
+    
+    return redirect(url_for('manage_temp_users'))
+
+@app.route('/regenerate_temp_code/<username>')
+@login_required
+def regenerate_temp_code(username):
+    """Regenerate access code for temp user"""
+    temp_users = load_temp_users()
+    
+    if username not in temp_users:
+        flash('User not found', 'error')
+        return redirect(url_for('manage_temp_users'))
+    
+    new_code = generate_access_code()
+    temp_users[username]['code'] = new_code
+    
+    save_temp_users(temp_users)
+    
+    flash(f'New code for {username}: {new_code}', 'success')
+    return redirect(url_for('manage_temp_users'))
 
 if __name__ == "__main__":
     init_admin()

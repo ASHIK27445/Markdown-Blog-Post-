@@ -25,6 +25,7 @@ visitors.json
 
 #Sensetive
 admin_credentials.json
+# temp_users.json
 
 #folder
 static/images/server-images/

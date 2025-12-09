@@ -111,77 +111,62 @@
         {% if groups %}
         <div class="groups-grid">
             {% for group_id, group in groups.items() %}
-            <div class="group-card">
-                <div class="group-header">
-                    <h3 class="group-name">{{ group.name }}</h3>
-                    <span class="blog-count">{{ group.blogs|length }} posts</span>
-                </div>
-                
-                {% if group.description %}
-                <p class="group-description">{{ group.description }}</p>
-                {% endif %}
-
-                <!-- Add Blog to Group - Compact Vertical Layout -->
-                <div class="add-to-group-compact">
-                    <form method="POST" action="{{ url_for('add_blog_to_group') }}" class="compact-add-form">
-                        <input type="hidden" name="group_id" value="{{ group_id }}">
-                        <div class="compact-select-container">
-                            <select name="blog_id" class="blog-select-compact" required>
-                                <option value="">Select a blog...</option>
-                                {% for blog_id, blog in blogs.items() %}
-                                {% if blog and blog.title and blog_id not in group.blogs %}
-                                <option value="{{ blog_id }}">{{ blog.title }}</option>
+                <div class="group-card">
+                    <div class="group-header-section">
+                        <h3>
+                            {{ group.name }}
+                            {% if group.hidden %}
+                            <span class="group-hidden-badge">🔒 Hidden</span>
+                            {% endif %}
+                        </h3>
+                        <div class="group-actions">
+                            <!-- Hide/Show Group Button -->
+                            <a href="{{ url_for('toggle_group_visibility', group_id=group_id) }}" 
+                            class="group-visibility-btn {% if group.hidden %}show-group{% else %}hide-group{% endif %}">
+                                {% if group.hidden %}
+                                    👁️ Show Group
+                                {% else %}
+                                    🙈 Hide Group
                                 {% endif %}
-                                {% endfor %}
-                            </select>
-                            <button type="submit" class="action-btn add-compact">Add</button>
+                            </a>
+                            <a href="{{ url_for('delete_group', group_id=group_id) }}" 
+                            class="btn btn-danger"
+                            onclick="return confirm('Delete this group?')">
+                                🗑️ Delete Group
+                            </a>
                         </div>
-                    </form>
+                    </div>
+                    
+                    {% if group.description %}
+                    <p class="group-description">{{ group.description }}</p>
+                    {% endif %}
+                    
+                    <!-- Rest of your group content -->
+                    <div class="group-blogs">
+                        <h4>Blogs in this group ({{ group.blogs|length }}):</h4>
+                        {% if group.blogs %}
+                            <ul class="blog-list-in-group">
+                                {% for blog_id in group.blogs %}
+                                    {% if blog_id in blogs %}
+                                    <li>
+                                        {{ blogs[blog_id].title }}
+                                        {% if blogs[blog_id].hidden %}
+                                        <span class="hidden-badge">🔒</span>
+                                        {% endif %}
+                                        <form method="POST" action="{{ url_for('remove_blog_from_group') }}" style="display: inline;">
+                                            <input type="hidden" name="group_id" value="{{ group_id }}">
+                                            <input type="hidden" name="blog_id" value="{{ blog_id }}">
+                                            <button type="submit" class="btn-remove">Remove</button>
+                                        </form>
+                                    </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="no-blogs">No blogs in this group yet.</p>
+                        {% endif %}
+                    </div>
                 </div>
-
-                <!-- Blogs in this Group -->
-<!-- Blogs in this Group -->
-{% if group.blogs %}
-<div class="group-blogs">
-    <h4>Blogs in this group:</h4>
-    <div class="blog-tags">
-        {% for blog_id in group.blogs %}
-        {% if blog_id in blogs and blogs[blog_id] and blogs[blog_id].title %}
-        {% set blog = blogs[blog_id] %}
-        <div class="blog-tag">
-            <span>{{ blog.title }}</span>
-            <form method="POST" action="{{ url_for('remove_blog_from_group') }}" class="inline-form">
-                <input type="hidden" name="group_id" value="{{ group_id }}">
-                <input type="hidden" name="blog_id" value="{{ blog_id }}">
-                <button type="submit" class="remove-btn">&times;</button>
-            </form>
-        </div>
-        {% else %}
-        <!-- Show placeholder for missing blog -->
-        <div class="blog-tag" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;">
-            <span>Missing Blog (ID: {{ blog_id }})</span>
-            <form method="POST" action="{{ url_for('remove_blog_from_group') }}" class="inline-form">
-                <input type="hidden" name="group_id" value="{{ group_id }}">
-                <input type="hidden" name="blog_id" value="{{ blog_id }}">
-                <button type="submit" class="remove-btn">&times;</button>
-            </form>
-        </div>
-        {% endif %}
-        {% endfor %}
-    </div>
-</div>
-{% else %}
-<p class="no-blogs">No blogs in this group yet.</p>
-{% endif %}
-
-                <div class="card-actions">
-                    <a href="{{ url_for('delete_group', group_id=group_id) }}" 
-                       class="action-btn delete"
-                       onclick="return confirm('Delete this group?')">
-                        Delete Group
-                    </a>
-                </div>
-            </div>
             {% endfor %}
         </div>
         {% else %}
