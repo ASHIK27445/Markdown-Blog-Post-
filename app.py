@@ -252,22 +252,24 @@ def login_required(f):
 # Helper functions for temp users
 def load_temp_users():
     """Load temporary users data"""
+    temp_users = {}
+    
+    # First try to load from file (for local development)
     if os.path.exists(TEMP_USERS_FILE):
         try:
             with open(TEMP_USERS_FILE, 'r') as f:
                 temp_users = json.load(f)
-                
-                # Replace codes from environment variables if available
-                for username in temp_users:
-                    env_code = os.getenv(f'{username.upper()}_CODE')
-                    if env_code:
-                        temp_users[username]['code'] = env_code
-                
-                return temp_users
         except (json.JSONDecodeError, Exception) as e:
             print(f"Error loading temp users: {e}")
-            return {}
-    return {}
+    
+    # ALWAYS replace codes from environment variables (for Vercel)
+    for username in temp_users:
+        env_code = os.getenv(f'{username.upper()}_CODE')
+        if env_code:
+            print(f"Replacing code for {username} from environment")
+            temp_users[username]['code'] = env_code
+    
+    return temp_users
 
 def save_temp_users(temp_users):
     """Save temporary users data"""
