@@ -60,3 +60,21 @@ Your branch is fully restored.
 - Added Temp User management
 - Added Hide blog post and group
 - Added to temp user to see the hide post
+
+### v5.1: for github: [commit 62]
+Key Differences:
+Before:
+
+If file load fails → returns empty {}
+Environment variables only checked INSIDE the try block
+If error occurs, env vars are NEVER checked
+
+After:
+
+Initialize temp_users = {} OUTSIDE try block
+File loading is just the FIRST step
+Environment variable replacement happens ALWAYS (outside try block)
+Even if file fails, env vars still work
+
+Main fix: Moved the env variable loop OUTSIDE the try-except block, so it always runs regardless of file loading success/failure.
+

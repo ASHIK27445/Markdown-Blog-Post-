@@ -27,5 +27,8 @@ visitors.json
 admin_credentials.json
 # temp_users.json
 
+#readme file
+OTHERREADMEINFO.md
+
 #folder
 static/images/server-images/
